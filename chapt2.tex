@@ -1,0 +1,627 @@
+\hyphenation{}
+\chapter[Literature Review]%
+{Literature Review \label{litRev}}
+% handy link for kozeny equation: https://books.google.be/books?id=YjahdHIfon0C&pg=PA28&lpg=PA28&dq=darcy%27s+law+filtration&source=bl&ots=6W1q2uOF-e&sig=pVIHxWmQmGvVwa3XPlWqenVdVJ4&hl=nl&sa=X&sqi=2&ved=0ahUKEwi90I-p3bnMAhWKF8AKHS0wD90Q6AEINzAD#v=onepage&q=darcy's%20law%20filtration&f=false
+
+In order to further develop and improve the spatio-temporal model of filter cake formation elaborated by \cite{Ghijs2014}, it is necessary to thoroughly review the various modelling approaches in literature. In this manner, all processes and accompanying interdependencies can be mapped out, which enables the development of a realistic model comprising all relevant processes. The first part of this chapter is dedicated to this. In the second part of this chapter, a few promising profilometric techniques, necessary for model calibration, will be discussed.
+
+\section{Membrane fouling}
+Membrane fouling comes in many forms and types. Furthermore, generally accepted membrane fouling terminology is altered by different authors in the field. Before exploring the different models, some important concepts and the associated lexicon will be defined. \\ \\
+\cite{Mohammadi2003} defines membrane fouling as \textit{`` [...] the existence and growth of micro-organisms and the irreversible collection of materials on the membrane surface which results in a flux decline."} However, a more suitable definition is \textit{`` [...] the process resulting in loss of performance of a membrane due to deposition of suspended or dissolved substances on its external surfaces, at its pore openings, or within its pores"} by \cite{Shimidzu1996} because it also includes pore fouling. \\ \\
+Depending on the type of membrane filtration (nanofiltration, microfiltration, etc.\ ), different types of fouling can be encountered during operation. Generally, fouling can be classified as follows:
+
+\begin{itemize}
+\item scaling: precipitation of substances due to exceeding the solubility product induced by the process of concentration polarisation;
+\item particulate fouling, inorganic and organic;
+\item biofouling: fouling effects due to colonisation by bacteria;
+\item fouling by macromolecular substances;
+\item chemical reaction of solutes with the membrane polymer and/or its boundary layer;
+\end{itemize}  
+It is nevertheless important to keep in mind that these are only the main types. It is possible that other, more specific types exist. Some authors prefer to classify fouling in terms of persistency (reversible, irreversible and irrecoverable fouling) whilst others favor a mechanical categorisation (pore blocking, cake formation, intermediate blocking, etc.\ ). Unfortunately, these classifications cannot be compared mutually, as there is no complete parity between any of these types. \par
+% 
+% \begin{figure}[H]
+% \begin{center}
+% \hspace{-1.5cm}
+% %\includegraphics[]{figs/.PNG}
+% \caption{....\label{foulingImage}}
+% \end{center}
+% \end{figure}
+% \todo[inline]{JB: Hier zou een foto van zo een cake kunnen passen om de gedachten te vestigen, BDJ: heb nog geen verduidelijkende afbeelding gevonden}
+Another important phenomenon to elucidate is concentration polarisation. This is the tendency of solutes to accumulate near the membrane. Materials, rejected by the membrane, accumulate in the vicinity of the membrane surface. The thickness of this layer is governed by the hydrodynamics; increasing crossflow velocities and a decreasing membrane flux result in a decreasing thickness. This is partially compensated by diffusion (back diffusion) and under steady-state conditions a balance is established between the forces that transport the solutes to, through and away from the membrane \citep{MBRBook}. 
+
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.7\textwidth]{figs/croppedCP.png}
+\caption{Schematic representation of the driving forces leading to concentration polarisation in crossflow membrane filtration processes \citep{MBRBook}.\label{CP}}
+\end{center}
+\end{figure}
+
+\section{Membrane fouling models}
+Now that the lexiconic framework has been established, it is possible to unambiguously describe the different existing modelling approaches that are most relevant for this thesis. Both mechanistic and data-driven models will be discussed. Here, ``data-driven" is regarded as black-box modelling using machine learning techniques, whilst ``mechanistic" is regarded as gray-box modelling.
+
+\subsection{Resistance-in-series models \label{sec:RIS}}
+
+The majority of fouling models are based on the \gls{RIS} concept. This approach, based on Darcy's law, Eq.\ \eqref{Darcy}, defines a membrane resistance $\gls{R}$ [\unit{\reciprocal\metre}] to relate the flux $\gls{J}$ [\unit{\cubic\metre \, \rpsquare\metre \, \reciprocal\second}] across the membrane to the \gls{TMP} or $\gls{dp}$ [\pascal],
+\begin{equation}
+\gls{dp} = \gls{J}\, \gls{R}\, \gls{fluidDyn}  \, ,
+\label{Darcy}
+\end{equation}
+with \gls{fluidDyn} [\unit{\kilogram \, \reciprocal\metre \, \reciprocal\second}] the dynamic viscosity of the fluid. \par
+Typically, the total membrane resistance consists of different resistance terms in series, the clean membrane resistance $\gls{Rm}$ [\unit{\reciprocal\metre}] and various resistances originating from different fouling layers. Mostly they comprise of fouling types from different classifications which is tricky as overlap of the underlying process is possible, e.g.\ pore blocking and irreversible fouling are not independent. The clean membrane resistance is the inherent resistance of the membrane, which is constant, and is provided by the membrane manufacturer or obtained from pure water filtration experiments \citep{Naessens2012}.
+
+Numerous \gls{RIS} models are proposed in literature, each  introducing different resistance terms. For each resistance term a separate model needs to be developed. These models can be mechanistic, describing the real mechanisms of the process or semi-empirical, requiring  more careful calibration \citep{Naessens2012}. \\ \\One of the more simple, empirical \gls{RIS} model is presented in \cite{Khan2009}. Here, the total hydraulic resistance $\gls{Rt}$ [\unit{\reciprocal\metre}] is defined as the sum of the cake resistance $\gls{Rc}$ [\unit{\reciprocal\metre}] caused by deposition of particulate matter on top of the membrane, the fouling resistance $\gls{Rf}$ [\unit{\reciprocal\metre}] due to pore blocking and adsorption of matter within the membrane and the abovementioned clean membrane resistance $\gls{Rm}$, i.e.
+\begin{equation}
+\gls{Rt} = \gls{Rm} + \gls{Rc} + \gls{Rf}
+\label{RISKhan}
+\end{equation}
+
+The resistance terms in Eq.\ \eqref{RISKhan} are calibrated with different filtration experiments.
+Measurements of the \gls{TMP} and flux in combination with Darcy's law result in values for the different resistance terms. $\gls{Rm}$ is determined through filtration experiments on a chemically cleaned membrane, while $\gls{Rf}$ is measured with a membrane where the cake was removed after a previous filtration experiment. $\gls{Rt}$ was determined from the final flux and \gls{TMP} at the end of the filtration experiments. Finally, $\gls{Rc}$ can be obtained by re-arranging Eq.\ \eqref{RISKhan} and filling in the known resistances. This approach is very straightforward, the resistance terms are obtained by directly fitting Eq.\ \eqref{Darcy} to the experimental data. \par
+A more elaborate approach is described by \cite{Wintgens2003}. The same resistance terms %($\gls{Rm}$, $\gls{Rc}$ and $\gls{Rf}$)
+are used as in the previous model, but each term is described by semi-empirical equations instead of deriving them directly from Darcy's law. The cake resistance $\gls{Rc}$ is assumed to be dependent on the concentration of the cake layer forming component at the membrane surface $\gls{cM}$ [\unit{\kilogram\, \rpcubic\metre}] as follows,
+\begin{equation}
+\gls{Rc} = \gls{kc}\, \gls{cM}
+\label{RcWint} ,
+\end{equation}
+with \gls{kc} [\unit{\metre\squared\, \reciprocal\kilogram}] an empirical parameter. \par
+When considering concentration polarisation effects, $\gls{cM}$ follows from
+\begin{equation}
+\gls{J} = \gls{kp}\, ln \left(\cfrac{\gls{cM}}{\gls{cb}} \right)
+\label{polarisationWint} ,
+\end{equation}
+
+with $\gls{kp}$ [\unit{\cubic\metre\, \rpsquare\metre\, \reciprocal\second}] the local mass transfer coefficient and $\gls{cb}$ [\unit{\kilogram\, \rpcubic\metre}] the bulk concentration of suspensed solids. \par
+The authors assume that the fouling resistance $\gls{Rf}$ is dependent on the total permeate volume produced during filtration as
+\begin{equation}
+\gls{Rf} = \gls{Sf}\, (1-e^{-\gls{kf}\, \int_0^t J(t)\, \mathrm{d}t})
+\label{foulingWint} .
+\end{equation}
+with \gls{Sf} [\,-\,] a factor that represents the specific surface area of the membrane that can be covered by fouling products and \gls{kf} [\,-\,] an empirical parameter. \par
+
+The model parameters $\gls{kc}$, $\gls{Sf}$, $\gls{kf}$, $\gls{kp}$ and the clean membrane resistance $\gls{Rm}$ are obtained through calibration.\par
+Model validation shows that this approach is able to accurately predict the flux. It is important to note that validation was done with data from another filtration unit, independent from the calibration dataset. Some of the \gls{RIS} models, discussed in this section, are capable of closely approximating the impact of fouling on process variables such as flux and \gls{TMP}. Still, these semi-empirical models do not yield insight into the different fouling mechanics. Our objective is to better characterise the processes and mechanics behind fouling. With this in mind it is necessary to move towards more advanced mechanistic models that aim at fully describing the major physical processes in play. Additionally, such models have the tendency to be more widely applicable, in contrast to the empirical models that need to be recalibrated when applied in other operational conditions.
+
+\subsection{Advanced mechanistic models}
+As previously mentioned, \gls{RIS} models dominate the fouling modelling landscape. This section describes the more advanced, mechanistic fouling models. Most of these models also use the \gls{RIS} approach in which the different resistance terms are described mechanistically. A summary of the basic ideas behind these approaches will be given, followed by a critical review of their strengths and weaknesses.
+%Most of these models are semi-physical models i.e.\ some of the more well-known processes are described through knowledge-based modelling while other processes are still described by parametric black-box models.\par
+\subsubsection{Force balance}
+\cite{Lu1993} start from the idea that the cake resistance is largely dependent on the structure of the filter cake and the size of the bulk particles. Consequently, a model is developed that is first of all capable of accurately predicting the cake layer structure in a dead-end, constant pressure filtration system and secondly, incorporates the particle size dependencies. \par
+For a particle that is depositing on the filter cake a critical friction angle is calculated to determine if the particle will ``stick" to the surface (membrane or filter cake) or not. This angle of friction $\theta$ [\,-\,] is defined as the angle between the gravity vector and the line between the particle centers, A (depositing particle) and B (deposited particle) (Figure \ref{critFric}).
+Below a certain critical friction angle $\gls{thetaC}$, the friction between particles A and B is large enough for particle A to deposit on particle B. In contrast, for $\gls{theta}$ values larger than $\gls{thetaC}$, not enough friction is occurring and particle A will not be able to deposit and slide past particle B.
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[]{figs/critFric.PNG}
+\caption{Representation of the considered forces on a settling particle at the cake surface and the friction angle \citep{Lu1993}.\label{critFric}}
+\end{center}
+\end{figure}
+$\theta_c$ is determined from a force balance on the depositing particle (A). At the critical condition ($\theta = \gls{thetaC}$), the tangential forces are in equilibrium with the friction forces, so
+\begin{equation}
+(F_g +F_d)\, \sin(\theta_c) = f_c\,(F_i+(F_g + F_d)\, \cos(\theta_c))
+\label{Lu1993FB} ,
+\end{equation}
+with $\gls{Fi}$ [\unit{\newton}], the interparticle force, $\gls{Fd}$ [\unit{\newton}] the drag force, $\gls{Fg}$ [\unit{\newton}] the gravity force and $\gls{fc}$ [\,-\,] the friction factor between particles \citep{Lu1993}. When the values of all forces in Eq.\ \eqref{Lu1993FB} are known it is possible to determine $\theta_c$. A detailed explanation and derivation of the different equations for the forces and parameters can be found in the original article by \cite{Lu1993}. The number of particles arriving at the cake surface is controlled by the concentration and flux. The deposition point is determined by ``dropping" particles from a random position onto the cake or membrane and evaluating the angle of friction, as explained above. Hence, a cake structure is obtained for a certain value of \gls{thetaC}. For the particle stacking, perfectly spherical particles are assumed but the porosity can be corrected with a shape factor $\phi_s$ [\,-\,] for other shapes,
+\begin{equation}
+  \phi_s= \cfrac{1-\epsilon}{1-\epsilon_\mathrm{sph}} \, ,
+\end{equation}
+with $\epsilon$ [\,-\,] the actual porosity of the filter cake for non-sperical particles, $\epsilon_\mathrm{sph}$ [\,-\,] the porosity of the filter cake determined by the model, assuming perfect spheres. A full mathematical description on the determination of $\phi_s$ is given in \cite{Cross1985}. \par
+Also the process of compression is considered, by calculating a porosity change based on a fluid mass balance. The flux across the filter is calculated with the Kozeny-Carman equation,
+\begin{equation}
+\gls{J} = \cfrac{\mathrm{\Delta}p}{l}\, \cfrac{\epsilon^3}{\gls{fluidKin} \, K\, S^2 \, (1-\epsilon)^2}
+\label{KozenyCorrect} .
+\end{equation}
+This relation indicates that the flux $\gls{J}$ through a filter with depth $\gls{dl}$ [\unit{\metre}] is influenced by the \gls{TMP} $\gls{dp}$, the specific surface area $\gls{S}$ [\unit{\metre\squared}], the kinematic viscosity of the fluid $\gls{fluidKin}$ [\unit{\metre\squared\, \reciprocal\second}], the cake porosity $\gls{eps}$ and modulated by the Kozeny constant $\gls{K}$ [\,-\,]. \par
+An expression for the Kozeny constant in function of the porosity is obtained by solving the Navier-Stokes equations and a continuity equation. Which in turn, when combined with Eq. \eqref{KozenyCorrect}, gives rise to an equation for the specific filtration resistance $\gls{alpha}$ [\unit{\metre\, \reciprocal\kilogram}] of the filter cake (Eq. \ref{HwangRes}). 
+%A continuity equation in physics is an equation that describes the transport of some quantity. It is particularly simple and particularly powerful when applied to a conserved quantity, but it can be generalized to apply to any extensive quantity.
+\begin{equation}
+\alpha = K \, S^2 \, \frac{1-\epsilon}{\epsilon^3 \, \rho_s}
+\label{HwangRes} ,
+\end{equation}
+where $\gls{rhoS}$ [\unit{\kilogram\, \rpcubic\metre}] is the density of the solids. \par
+The predicted average porosity and average specific resistance of the filter cake closely approximate the experimental values. However, this model is restricted to dead-end filtration which is rarely used in practice and this model is therefore not applicable to crossflow filtration systems. For example, considering Eq.\ \eqref{Lu1993FB}, one also needs to take into account the lift force, history force, added mass force, etc.\ \citep{Ghijs2014}. The assumption of a spatially homogeneous flux is also too straightforward and might influence the rate of local cake layer build-up considerably, as well as the architecture and porosity. Nevertheless, the introduction of a critical friction angle and the correction of the cake porosity with the shape factor of the particles are valuable ideas. 
+%it can be expected that this   The force balance is only used in the initialisation to calculate $\theta_c$.   }
+\subsubsection{Pore blocking}
+A three-dimensional fouling model for the microfiltration of a polydisperse, charged solution was developed by \cite{Yoon1999}. An important improvement compared to \cite{Lu1993} is the consideration of both pore blocking and cake layer formation. The model allows for the simulation of flux in function of time for any concentration of iron oxide particles, within the validated concentration range. \par
+The effective particle deposition rate is calculated for each particle in the premised \gls{PSD}, taking into account both processes that ``push'' the particle towards the membrane and backtransport processes. This balance takes into consideration: inertia lifting $\gls{vl}$ [\unit{\metre\, \reciprocal\second}] particle interaction $\gls{vi}$ [\unit{\metre\, \reciprocal\second}], convection $\gls{v}$ [\unit{\metre\, \reciprocal\second}], diffusion $\gls{vd}$ [\unit{\metre\, \reciprocal\second}] and shear induced diffusion $\gls{vs}$ [\unit{\metre\, \reciprocal\second}]. The effective deposition velocity is the difference between the backtransport velocity:
+\begin{equation}
+\gls{vtot}(\gls{partDia})=\gls{vd}+\gls{vl}+\gls{vs}+\gls{vi}
+\label{yoonsum}\, ,
+\end{equation}
+and the velocity toward the membrane $\gls{v}$ [\unit{\metre\, \reciprocal\second}], which is governed by the flux. With $\gls{partDia}$ [\unit{\metre}] the particle diameter. The gravitational settling velocity $\gls{vg}$ [\unit{\metre\, \reciprocal\second}] is not included in this balance, so it is assumed that the effect of gravity is negligible. Subsequently, the distribution of particle sizes that are able to deposit on the membrane, given the current flux and backtransport velocity, is given by 
+\begin{equation}
+F_{\mathrm{num}}(\gls{t},\gls{partDia})=F_{\mathrm{num}}(\gls{t}_\mathrm{0},\gls{partDia}) \, \cfrac{\left( J(\gls{t}) - \gls{vtot}(\gls{partDia})\right)}{J(\gls{t})}
+\label{Yoon1999Dist} ,
+\end{equation}
+
+with $F_{\mathrm{num}}(\gls{t}_\mathrm{0},\gls{partDia})$, the initial particle size distribution. \par
+The cake layer is built up by depositing particles, 
+sampled from $F_{\mathrm{num}}(\gls{t},\gls{partDia})$, one by one on the membrane surface. The particle is dropped from a random location above the membrane. A rolling algorithm is applied whenever a particle comes into contact with a previously settled particle. The rolling continues until a stable position is reached, i.e. the particle touches three already settled particles or the membrane surface. After deposition, the particle is tested for pore blocking (Figure \ref{poreBlock}).  
+\begin{figure}[H]
+\begin{center}
+\def\svgwidth{0.6\columnwidth}
+\input{figs/yoon.pdf_tex}
+\caption{Pore blocking rule implemented in the model of \cite{Yoon1999}. Only particles that touch the membrane surface and are centered within the pore boundaries constitute to pore blocking. Figure adapted from \cite{Yoon1999}. \label{poreBlock}}
+\end{center}
+\end{figure}
+
+The flux through the membrane is obtained with Darcy's law in conjunction with a \gls{RIS} model, taking into account the inherent membrane resistance and pore blocking resistance \gls{Rb} [\unit{\reciprocal\metre}]. The latter is computed from  
+\begin{equation}
+\gls{Rb}= \cfrac{\gls{N0}}{(\gls{N}-1)} \, \gls{Rm} ,
+\label{Yoon1999Rb}
+\end{equation}
+the flux follows from
+\begin{equation}
+J=\frac{\gls{dpteff}}{\gls{fluidKin} \, (\gls{Rm}+\gls{Rb})} .
+\label{Yoon1999J}
+\end{equation}
+with $\gls{N0}$ [\,-\,] the initial number of membrane pores, $\gls{N}$ [\,-\,] the free pores.
+Eq. \eqref{Yoon1999J} does not contain a resistance term for the cake layer, but its effect is incorporated in $\gls{dpteff}$ [\unit{\pascal}] where the pressure drop over the membrane and cake is lowered by the pressure drop over the cake $\gls{dpc}$ [\unit{\pascal}].
+The specific surface area and porosity vary with the cake layer depth. Consequently, $\epsilon$ in the Kozeny-Carman equation (Eq. \eqref{KozenyCorrect}) is not a constant. To deal with this issue, the pressure drop is calculated over different ``slices'' in a recursive manner (Eq.\ \eqref{KozenySlice}, Figure \ref{YoonSlice})
+\begin{equation}
+\Delta p_{\mathrm{T}}(i+1) =\Delta p_\mathrm{{T}}(i) - \cfrac{\gls{fluidKin}\, \epsilon_{\mathrm{i}}^3 \, J}{5 \, S_{\mathrm{i}}^{2}(1-\epsilon_{\mathrm{i}})^{2}} \, \gls{di},
+\label{KozenySlice}
+\end{equation}
+
+with $S_\mathrm{i}$ [\unit{\metre\squared}] the specific surface area of the particles and $\gls{di}$ [\unit{\metre}] the thickness of a slice. It is not clear why the Kozeny constant $k$ is missing from Eq.\ \eqref{KozenySlice}. \par
+After applying this scheme to every slice, $\gls{dpc}$ is obtained and the flux across the membrane is computed with Eq.\ \eqref{Yoon1999J}.
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.6\textwidth]{figs/pressuredropYoon.PNG}
+\caption{Representation of the cake layer and the subdivision in different slices \cite{Yoon1999}.\label{YoonSlice}}
+\end{center}
+\end{figure}
+
+Each time step, one particle is sedimented on the cake or membrane surface. The elapsed time between two particle depositions is evaluated with Eq.\ \ref{timestep}. 
+\begin{equation}
+\Delta \gls{t} =\left( \left( J(\gls{t}) - \gls{vtot}(\gls{partDia})\right)\, \gls{Am} \, \gls{cb}\, F_{\mathrm{num}}(\gls{t},\gls{partDia}) \right)
+\label{timestep}
+\end{equation}
+with $\gls{Am}$ [\unit{\metre\squared}] the specific membrane area.
+In the next time step, Eq. \ref{Yoon1999Dist} is re-evaluated with the new flux and a new particle is sampled from the new \gls{PSD}.\par
+The model performs quite well in the early stages of the filtration but the prediction accuracy gradually declines with time. The simulated flux evolves to a steady state while experimental values show that the flux keeps decreasing. The authors mention that unfulfilled assumptions for the backtransport equations as the probable cause, but the discrepancy between the simulations and experimental data can also be due to the overestimation of the inertial lift force. The channel inlet velocity is used as the velocity component in this force and this component is overestimated considerably for particles in the slow moving fluid close to the membrane surface. A more involved calculation of the velocity would probably enhance model performance. The added value of this model lies in the introduction of pore blocking in a less empirical manner, the polydispersity and charge interactions.\\ \\
+% \textbf{Strengths/weaknesses}
+% \begin{itemize}
+% \item strength: introduces particle rolling after sedimentation
+% \item strength: also takes into account pore blocking.
+% \item strength: three dimensional.
+% \item strength: packing rules in the cake-layer
+% \item strength: multi-disperse.
+% \item strength: charge interactions.
+% \item weakness: \textbf{no dynamic fluid the calculation of the forces is based on the maximum velocity, the velocity at the entrance, which is only partially true because of the parabolic profile the velocity in the middle of the tube, away from the entrance is higher than the entry velocity.}
+% %nog eens kijken naar die pore blocking condition ben hier nog niet van overtuigd 
+% \item weakness: only one cake layer with no local fluctations of the cake layer properties (no sectional approach)
+% \end{itemize}
+
+%Vraag: mij is het niet duidelijk waar in de filter de krachtenbalans uitgerekend wordt, is dit enkel aan de rand? Waar halen ze de waarde van de fluidum snelheid?
+In the previously discussed models, the filter cake is either assumed spatially homogeneous, with an average value for porosity and thickness, or heterogeneous along the depth. Yet, heterogeneity along the longitudinal axis is never considered. This implies that there is no spatial variation of the filtration resistance and flux. Consequently, these models are not able to account for the spatial heterogeneity of membrane fouling. \cite{Li2006} propose a sectional approach to deal with this problem. \par
+This sectional method allows the inclusion of turbulence, induced by aeration. The membrane surface is subdivided into different sections with equal length in which the different variables are tracked. The subdivision is along the longitudinal axis of the membrane, in contrast to the method discussed in \cite{Yoon1999}, where the ``slices" are taken parallel to the membrane. \par
+For simulating the attachment of a sludge particle with a certain diameter ($\gls{partDia}$) on the membrane surface, two forces are taken into account: the drag force $\gls{Fd}$ and the lift force $\gls{Fl}$ [\unit{\newton}]. The permeate flux drags the particles to the membrane and the lift force, a consequence of the turbulent flow, is the opposing force. The balance between these two forces controls the rate of particle deposition, expressed as a probability of deposition $\gls{E}$ [\,-\,]: \par
+\begin{equation}
+\gls{E}=\cfrac{\gls{Fd}}{\gls{Fd}+\gls{Fl}}
+\label{Prob}
+\end{equation}
+For a probability $\gls{E}$, the rate of biomass attachment becomes, 
+
+\begin{equation}
+\cfrac{\mathrm{d} M}{\mathrm{d} t} = E\, C\, J
+\label{LiAttRate}
+\end{equation}
+
+with $\gls{cb}$ [\unit{\kilogram\, \rpcubic\metre}], the concentration of \gls{SS}.\par
+
+The effects of the continuous scouring through aeration is expressed as a rate of detachment described by Eq.\ \ref{LiDeattRate}.
+
+\begin{equation}
+\cfrac{\mathrm{d} M}{\mathrm{d} t} = -K_d \, \gls{Msf}
+\label{LiDeattRate}
+\end{equation}
+ 
+with $\gls{Kd}$ [\unit{\reciprocal\second}] the rate coefficient of sludge detachment and $\gls{Msf}$ [\unit{\kilogram\, \rpsquare\metre}] the mass of sludge in the filter cake. \par
+A Langmuir model is used for $\gls{Kd}$, as it reaches a maximum for a very thick filter cake and decreases with the cake thickness. The rate of detachment is essentially proportional to the shear intensity, biomass stickiness and other properties of the sludge layer. The net rate of sludge accumulation during a certain filtration period is obtained by solving the abovementioned equations for biomass attachment and detachment. \cite{Li2006} also describe equations for the rate of sludge removal during the idle-cleaning period. \par
+The filtration resistance is calculated using a \gls{RIS} approach. The total resistance $\gls{Rt}$ is the sum of the intrinsic membrane resistance, the resistance of the dynamic and stable cake layer and the pore fouling resistance. All of these resistance terms involve an empirical resistance parameter that needs calibration. Finally, Darcy's law is used to calculate the flux through the different membrane sections. As opposed to other models, sludge detachment is considered and a sectional approach is established to capture the heterogeneity of membrane fouling. However, this model involves a lot of parameters and the article does not provide any information on the calibration. \par
+% Moreover, the definition of a `` probability of deposition" seems to be misplaced when considering laminar conditions, a particle deposits or it stays in the bulk phase, there is no gray area. \par
+Due to the many empirically described mechanisms, the performance of the model varies in different operational conditions, which might just indicate that the model does not comprise all relevant processes.
+% Wouters review ends here
+%
+% possible inclusion of \cite{Busch2007}
+%\textbf{Strengths/weaknesses}
+%\begin{itemize}
+%\item strength: Sectional approach
+%\item strength: SMBR model with air scouring
+%\item strength: takes into account sludge removal and sludge detachment
+%\item strength: no taking into into account biofouling in a MBR
+%\item weakness: the model has a lot of parameters that need calibration
+%\item weakness: the model is very empirical
+%\item weakness: calibration is not described, eventough this model involves a lot of empirical parameters.
+%\end{itemize}
+\subsubsection{Cut-off diameter}
+A one-dimensional model describing the \gls{TMP} in a submerged hollow fiber membrane is proposed by \cite{Broeckmann2006}. The hydrodynamics at the outer side of the membranes are determined through a multiphase flow model for which the details are unfortunately not discussed in the article. \par 
+The bulk phase particles are divided into two fractions. The first one is able to enter the pores and constitutes to pore blocking. The other fraction is not able to enter the pores and constitutes to cake layer formation. Mathematically, this is achieved by multiplying the retained weight fraction distribution of the membrane pore size distribution $\gls{Rpor}(\gls{partDia})$ with the distribution of the bulk particle sizes $\gls{gbulk}(\gls{partDia})$. For a particle with size $\gls{partDia}$ that is approaching a random pore, the probability of the pore being larger than $\gls{partDia}$ is given by $\gls{Rpor}(\gls{partDia})$. Thus, the \gls{PSD} of the fraction entering the pores is given by,
+\begin{equation}
+\gls{gmem}(\gls{partDia})=\gls{Rpor}(\gls{partDia})\, \gls{gbulk}(\gls{partDia})
+\label{BroekEntering} .
+\end{equation}
+
+Hence, the \gls{PSD} of the retained solids follows from,
+\begin{equation}
+\gls{gcake}(\gls{partDia})=(1-\gls{Rpor}(\gls{partDia}))\, \gls{gbulk}(\gls{partDia})
+\label{BroekRetained} .
+\end{equation}
+
+For what concerns pore blocking, it is assumed that every particle able to penetrate the membrane is completely retained within the membrane pores. Hence, the membrane porosity decreases when particles enter the pores. The rate of porosity change is calculated through a mass balance,
+\begin{equation}
+\gls{rhopm}\, \gls{Vm} \, \cfrac{\mathrm{d} \gls{epsm}}{\mathrm{d}\gls{t}} \, =-\gls{J}\, \gls{cbm}\, \gls{Am}
+\label{broekPor} ,
+\end{equation}
+
+with $\gls{Vm}$ [\unit{\cubic\metre}] the total membrane volume, $\gls{rhopm}$ [\kilogram\, \rpcubic\metre] the density of particles in the membrane pores and $\gls{cbm}$ [\kilogram\, \rpcubic\metre] the mass concentration of particles that will penetrate the membrane, based on $\gls{gmem}(\gls{partDia})$. \par 
+\cite{Broeckmann2006} also employs a \gls{RIS} approach.
+The RIS model consists of four resistances; the cake resistance, the intrinsic membrane resistance, the pore blocking resistance and the irreversible resistance.
+The Kozeny-Carman equation (Eq. \ref{KozenyCorrect}) can be rewritten to relate the membrane resistance to the membrane porosity, obtained from Eq.\ \ref{broekPor},
+\begin{equation}
+\gls{Rb} + \gls{Rm} = \cfrac{(1-\gls{epsm})^2\, \gls{Kp}}{(\gls{epsm})^3}
+\label{Broeker} ,
+\end{equation}
+
+where $\gls{Kp}$ [\reciprocal\metre] is a membrane specific constant. $\gls{Rc}$ is obtained from,
+\begin{equation}
+\cfrac{\mathrm{d}\gls{Rc}}{\mathrm{d} \gls{t}} = \cfrac{\mathrm{d} l}{\mathrm{d}t}\, \gls{Kc}
+\label{BroekCake} ,
+\end{equation}
+with \gls{dl} [\unit{}{\metre}] the filter cake thickness and the specific cake resistance $\gls{Kc}$,
+\begin{equation}
+\gls{Kc} = \cfrac{ \gls{k}\, 90}{\gls{dpHead}^2}\, \cfrac{ \left( \cfrac{ \gls{cc}}{\gls{rhoS}} \right) ^2}{\left( 1-\cfrac{ \gls{cc}}{\gls{rhoS}} \right) ^3}
+\label{BroekBlakeKozeny} ,
+\end{equation}
+
+%hier had ik nog een vraagje over zie opmerking artikel in mendeley
+%\todo[inline]{paper broekcake nog eens uitspekken}
+with \gls{cc} [\unit{\kilogram\, \rpcubic\metre}] the mass concentration of the cake layer and \gls{dpHead} [\unit{\metre}] the mean diameter of bulk particles. \par
+The cake layer formation is determined through a force balance (Figure \ref{BroeckmannForceBal}). \par
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.6\textwidth]{figs/BroeckmannForceBal.PNG}
+\caption{Considered forces on a particle during filtration \citep{Broeckmann2006}.\label{BroeckmannForceBal}}
+\end{center}
+\end{figure}
+$F_t$ [\unit{\newton}] is the tangential shear stress resulting from the liquid flow, $F_{\tau}$ [\unit{\newton}] is the friction force, the normal force $F_N$ [\unit{\newton}] is the drag force resulting from the permeate flux and $F_A$ [\unit{\newton}] is the adhesion force between the particles and the membrane. It is interesting to note that the lift force is not included in this mass balance. All forces point towards the membrane, no backtransport forces are considered to oppose this. With this fact in mind, a particle ``sticks" to the surface when the horizontal forces cancel out one another (Eq.\ \ref{Stickcondition}) and 
+\begin{equation}
+\gls{tauW}\, \gls{partDia}^2-\gls{muMax}\, (\gls{FN} + \gls{FA}) =  0 \, ,
+\label{Stickcondition}
+\end{equation}
+where \gls{tauW} [\unit{\pascal}] is the shear stress and \gls{muMax} [\,-\,] is the maximum friction coefficient. \par
+From Eq.\ \ref{Stickcondition} an equation is derived for the maximum diameter of particles that are able to adhere to the membrane surface, under the current filtration conditions. Particles larger than this cut-off diameter will stay in the bulk phase.\par
+The growth of the cake layer is described by  Eq.\ \ref{BroeckCakeGrowth}. 
+\begin{equation}
+\gls{cc} \, \cfrac{\mathrm{d}\gls{dl}}{\mathrm{d} \gls{t}} = \gls{J}\, \gls{omega} \, \gls{cbc}
+\label{BroeckCakeGrowth}
+\end{equation}
+
+with $\gls{omega}$ [\,-\,] the bulk concentration of particles that are retained on the membrane surface, i.e. the fraction of \gls{cbc} [\unit{\kilogram\, \rpcubic\metre}] that is smaller than the cutoff diameter and $\gls{cc}$ the mass concentration of the cake layer. \cite{Broeckmann2006} do not specify how $\gls{cc}$ is obtained even though it is a crucial variable/parameter. Hence, it is assumed that $\gls{cc}$ is a parameter that needs calibration. \par
+During backflushing, particles are removed from the cake layer and pores. This process is incorporated through simple, empirical models. \par
+The strength of this model is the implementation of particle and pore size distributions as typically only the former is included. Additionally, the implementation of backflushing processes definitely improves the applicability of this model even though the formulation is simple and empirical. The model however, has a few weaknesses including the lack of a sectional approach, many parameters and the low prediction accuracy when operational conditions differ from calibration conditions. Furthermore, some assumptions that can be valid for hollow fiber membrane systems might be invalid for other types of membrane filtration. The application of the model on these systems is therefore less appealing. Both a strength and a weakness of the model is its focus on constant flux filtration as most models address constant pressure filtration instead.
+%The model contains a lot of parameters that need calibration. Validation shows that the model does not perform well when predicting the TMP with a flux that differs from the calibration flux. Also no sectional approach is used. Back flushing models are implemented even though there simple and empirical. Some assumptions can be valid for hollow fibre membrane systems, e.g. complete retention of particles inside the membrane but might be invalid for other types of filtration which makes the model less appealing to apply on these systems. This model addresses constant flux filtration, which can be seen as a strength or a weakness as most models address constant pressure filtration.}
+%\begin{itemize}
+%\item \textbf{New to this force balance is the addition of adhesive force between the particle and membrane.}
+%\item weakness: No sectional approach is used.
+%\item weakness: A lot of model parameters that need to be calibrated
+%\item strength: This approach includes backflushing.
+%\item weakness: the back flushing models are simple and empirical
+%\item weakness: the results show that the model doesn't perform great when predicting TMP under a different flux
+%\item weakness: some of the assumptions can be valid for fibre membranes but might be invalid for other membrane types, example= Complete retention of particles inside the membrane
+%\item strength: not a lot of models with constant flux filtration 
+%\end{itemize}
+
+\subsubsection{Force balance, rolling and backwashing}
+\cite{Smets} elaborates a model to predict the \gls{TMP} in an \gls{MBR} that combines the deposition criteria described in \cite{Broeckmann2006} and the particle depositing rules from \cite{Yoon1999} in a \gls{RIS}. \par
+%Each series of particle depositions is defined as a ``filtration cycle". A filtration cycle ends when the total volume of depositing particles reaches the total volume of particles which can deposit during one cycle, following from Eq.\ref{CaoVmax}. \par
+The cake layer is formed by particles that deposit one by one from a random location within the boundaries of the simulated membrane surface. A particle drops until it reaches the membrane surface or an already deposited particle; of the latter, a rolling algorithm is initiated until a stable position is reached. Each series of particle depositions is defined as a ``filtration cycle". Such a cycle ends when the total volume of deposited particles fulfills, 
+\begin{equation}
+V_{\mathrm{p,m}} = \cfrac{ \gls{Am} \, \gls{J}\, \gls{tf}\, \gls{pf} \, \gls{cb}}{\gls{rhoS}}
+\label{CaoVmax} ,
+\end{equation}
+
+with $\gls{tf}$ [\unit{\second}], the filtration time per filtration cycle and $\gls{pf}$ [\,-\,] the total fraction of depositable particles. Eq.\ \ref{CaoVmax} is a combination of the equations presented in \cite{Yoon1999} and \cite{Broeckmann2006}. \par 
+The porosity of this newly formed cake layer is evaluated at the end of each filtration cycle and is afterwards modified with a compression factor taking into account compression.  With both the porosity and cake thickness established it is possible to calculate the \gls{TMP} using a \gls{RIS}. This model is furthermore extended with a backwashing model simulating cake removal due to air scouring and backwashing sensu stricto. \par
+The comprisal of different ideas and concepts results in a good performing model.
+It also shows the importance of different factors such as PSD, compression and shear stress on the characteristics of the filter cake. This model offers a porosity profile along the cake thickness. Ideally this should be extended with a porosity profile along the cake length. Cake compression is included albeit through a simple compression factor.
+The authors state the need for a hydrodynamic model in order to provide a more realistic shear stress.
+ % description of the depositing rules misschien in appendix steken als we dit algoritme toepassen op ons model. Dit stuk zou beter bij broeckmann besproken worden
+\subsubsection{Biofouling}
+All of the abovementioned models describe particulate fouling. Nonetheless, it is important to keep in mind that this is not the only fouling type, biofouling has a considerable impact on different systems as this kind of fouling not solely occurs at membranes but also at heat exchangers, pipes, feed spacers, etc. For this reason, a great deal of effort has been put in the modelling of this fouling type. Consequently, these models are generally more advanced than the \gls{RIS} models mentioned above. Such a model is described in \cite{Picioreanu2009} and \cite{Vrouwenvelder2010}. This three-dimensional biofouling model simulates liquid flow, mass transport of a soluble substrate and biofouling in the feed channels of reverse osmosis and nanofiltration systems. The hydrodynamics are modelled via the steady-state Navier-Stokes equations for incompressible laminar flow. The distribution of substrate in the system is obtained through a mass balance. The biofilm is mimicked using an overlaying cellular automaton including terms for growth, decay, convective and diffusive biomass spreading, biomass attachment and detachment. \par
+The simulations results (Figure \ref{picioPic}) really show the importance of coupling the fouling model with a fluid dynamics model. Figure \ref{picioPic} shows that when fouling persists, the fluid flow is redirected and high shear channels form where no fouling occurs. \par
+
+\begin{figure}[]
+    \centerline{
+    \subfigure[]{\includegraphics[width=0.47\textwidth]{picioPica.PNG}}
+    \subfigure[]{\includegraphics[width=0.47\textwidth]{picioPicb.PNG}}
+    }
+    \caption{Distribution of viscous shear and biofilm on the feed spacers for the initial condition (a) and after 2.5 days (b). The arrows show the direction and magnitude of the fluid velocity. The magnitude of the velocity is in the order of $1$ [m\, s\textsuperscript{-1}] \citep{Picioreanu2009}.   \label{picioPic}}
+\end{figure}
+
+The authors show that the model is able to accurately predict feed channel pressure drop and  biomass accumulation on the feed spacers. The simulated, three-dimensional distribution profiles of biomass and velocity agree qualitatively with the experimental measurements. The implementation of a fouling model in combination with \gls{CFD} is a major improvement towards accurate, mechanistic models. This methodology, implemented for biofouling is also highly relevant for particulate fouling as the fluid flow at the membrane greatly affects cake formation and vice-versa. This approach should be carried out in a sectional framework to incorporate heterogeneous cake formation. \\ \\
+Table \ref{overviewtable} provides an overview of the processes, fouling types, force balances, etc.\ that are included in the abovementioned mechanistic models. The processes comprise cake compression, detachment of cake layer/biofilm, backflushing and dynamic fluid simulations. Two force balances are considered, one for particles in the cake layer and one for particles in the fluid. The fouling types include particulate fouling, pore blocking and biofouling and the spatial heterogeneity of the fouling is taken into account. Also, particle shape corrections and multidispersity of the particles are included in the comparison.     
+%Bronnen [9-21] \cite{Picioreanu2009} eens bekijken voor CFD studies in membrane systems 
+% 2D variants exist: [22-36]
+
+
+%vette afbeelding is obligatory !
+
+%\begin{itemize}
+ %\item advantage: Very good model for the design and operation of membrane systems because of the 3D a lot less assumptions are being made.
+%\end{itemize}
+
+
+%    \begin{landscape}
+%      \noindent
+%      \thispagestyle{empty}
+%      \begin{table}[ht]
+%        \caption{Overview of the mechanistic models, FB = force balance, NM= not mentioned, PB= pore blocking , BF= biofouling}
+%        \begin{flushleft}
+% 	 \begin{tabular}{lccccccccccccc}
+% 	   \hline
+% 	   &  & \multicolumn{2}{c}{force balance} & & & & & & \multicolumn{3}{c}{fouling types}  \\
+% 	   \cline{3-4} \cline{10-12}
+% 	   \textbf{model} & crossflow & cake & fluid & heterogeneity & fluid dyn. & part. shape  & comp.  & multidisp. & cake & PB & BF & detach. & back flush.\\
+% 	   \cite{Lu1993} &  & X &  & 1D  &  & X & X & NM & X & & & &\\
+% 	   \cite{Yoon1999} & X & X &  & 1D  &  &  & X & X & X & X & & &\\
+% 	   \cite{Li2006} & X & X &  & 2D  &  &  &  & NM & X & X & & X & N/A \footnote{hollow fiber} \\
+% 	   \cite{Broeckmann2006} & X & X &  & 1D  & X \footnote{albeit not described in the article} &  &  & X & X & X & &  & X\\
+% 	   \hline
+% 	
+% 	 \end{tabular}
+%        \end{flushleft}
+%        \label{tab:multicol}
+%      \end{table}
+%    \end{landscape}
+ 
+   \begin{table}[]
+     \caption{Overview of the incorporated processes, fouling types, etc.\ and general details of the advanced mechanistic models.}
+       \begin{center}
+	 \begin{tabular}{lccccccc}
+	   & \rotlabel{-1in}{75}{\cite{Lu1993}} & \rotlabel{-1.1in}{75}{\cite{Yoon1999}} & \rotlabel{-1in}{75}{\cite{Li2006}} & \rotlabel{-0.85in}{75}{\cite{Broeckmann2006}} & \rotlabel{-1.29in}{75}{\cite{Smets}}& \rotlabel{-0.75in}{75}{\cite{Vrouwenvelder2010}}  \\
+	   \toprule
+	   \textbf{Operational mode} & DE & CF & CF & CF & CF & FF \\ \midrule
+	   \textbf{Processes} & & & & & & \\
+	   cake compression & X & X & & & X & \\
+	   fouling detachment & & & X & &  \\
+	   backflushing & & & & X & X & \\
+	   fluid dynamics & & & & X & X & X \\ \midrule
+	   \textbf{Force balance} & & & & & \\
+	   fouling layer  & X & X & X & X & X & X \\
+	   fluid & & & & & & X \\ \midrule
+	   \textbf{Fouling} & & & & \\
+	   particulate & X & X & X & X & X &  \\
+	   pore blocking & & X & X & X & X & \\
+	   biofouling & & & & & & X  \\
+	   spatial heterogeneity & 1D & 1D & 2D & 1D & 1D & 3D \\ \midrule
+	   \textbf{Other} & & & & \\
+	   particle shape & X & & & &  \\
+	   multidispersity & NM & X & NM & X & X & &  \\
+	   \bottomrule
+	  \end{tabular}
+       \end{center}
+       \label{overviewtable}
+       \caption*{NM: not mentioned, DE: dead-end filtration, CF: crossflow filtration, FF: feed channel fouling.} 
+	 %$\mathrm{^1}$ hollow fiber membrane filtration
+     \end{table}
+      % suggestions: multidispersity
+	   % iets met crit fric
+	   % charge interaction yoon1993
+	   % hollow fibre/ tubular membrane, membrane type?
+   
+   
+
+
+
+%\cite{Smets}
+%
+%\begin{itemize}
+%\item Uses activated sludge floc size information
+%\item Implemented in the model proposed by \cite{Broeckmann2006}
+%\item 3D modelling and visualisation of the cake layer to give input information for the fouling model.
+%\item The model starts from a particle size distribution (PSD)
+%\item Broeckmann model, is used to get the cut-off diameter $d_{p,max}$. Only diameter < $d_{p,max}$ can deposit => new PSD (closely resembles the approach from \cite{Yoon1999}) 
+%\item Building cake layer with sampled particles from new PSD sampling stops if the maximum amount of biomass that can deposit during one filtration cycle is reached. Particle depositing rules are followed.
+%\begin{itemize}
+%\item rules described in \cite{Yoon1999}), \cite{Smets} uses another rolling algorithm 
+%\item Pore blocking
+%\end{itemize}
+%\item Compression of the cake layer at the end of the filtration and backwash cycle.
+%\item evaluation of the cake porosity => broekmann => new $d_{p,max}$, evaluation of the cake layer resistance, TMP and cake layer thickness.
+%\item TMP calculation using darcy's law
+%\item RIS approach for $R_total= R_{mem}+R_{cake}$,$R_{cake}$ is the sum of resistances of all the sub-layers in the deposited cake => Blake-Kozeny
+%\item for compression: check the original article
+%\item Model calibration:
+%\begin{itemize}
+%\item empirical $R_{mem}$,$k_s$,$k_{kozeny}$,$tau_w$ are kept constant (I think they are obtained from the literature, need verification)
+%\end{itemize} calibration: compression factor
+%\end{itemize} calibration: 
+%
+%
+%\textbf{empirical models ref 1-4 \cite{Broeckmann2006}}
+%
+
+
+%In this section an overview of the current filter cake modelling landscape is given. This critical overview will depict the strengths and weaknesses of the models.    %Beetje letterlijk van Michael maar dit klinkt zo mooi
+
+
+%glossaries are used with gls or glspl (plural)
+%\gls{rsa} is a sensitivity method. \gls{glue} is based\ldots
+
+%Using \gls{rsa} again is now automatically shortened.
+
+\subsection{Data-driven models}
+Even though the majority of fouling models are mechanistic, it is important to review some of the data-driven modelling approaches as well. Typically, machine learning is used to fit a model to the experimental data.
+If sufficient data are available and precautions are taken to avoid overfitting, this type of ``black-box" modelling can lead to good results.\\ \\
+In \citet{Shetty2003} an artificial neural network was built to predict fouling of flat and spiral-wound nanofiltration membranes. The fouling is quantified in terms of the total resistance to water permeation $\gls{Rt}$, described by Darcy's law (Eq.\ \ref{Darcy}). The input layer consists of different operational and feed water quality parameters that are typically monitored during municipal wastewater treatment, e.g., influent flow rate, permeate flux, operation time, feed water quality parameters, etc. The neural network was trained on an extensive amount of data from different ground and surface water filtration experiments using different membranes to predict the total hydraulic resistance $\gls{Rt}$. In this way, a model was build that predicts membrane fouling in various operational conditions. \par
+Artificial neural networks excel at describing complex nonlinear relationships between input and output variables \citep{Tu1996} and are therefore a popular data-driven approach to model membrane fouling with numerous applications described in literature. A summary of these studies can be found in \cite{Mirbagheri2015}. \\ \\  %ergens heb ik ooit eens gelezen wat de sterkte is van ANN en waarom ze hier gebruikt wordne volgens mij iets te maken dat het goed ANN 
+\cite{Dalmau2015} propose the use of model trees in predicting membrane fouling, which combines linear regression with decision trees. Linear regression is a simple technique resulting in a model with high bias but low variance, prone to underfitting nonlinear data. In contrast, decision trees capture nonlinear patterns in the data, giving rise to models with low bias and high variance, making it prone to overfitting \citep{Dalmau2015}. The combination of both approaches leads to decision trees where each ``leaf" is a linear model. The model tree developed in the article consists of 35 multivariate linear equations. Each equation predicts the \gls{TMP} in various operating conditions. Model trees are capable of partially explaining the system, unlike many other data driven methods \citep{Dalmau2015}. \\ \\
+Data-driven models can also be applied from a different point of view, that is membrane state monitoring or fouling mechanism prediction. The former is elaborated by \cite{Maere2012} and uses principal component analysis in combination with clustering to monitor the fouling behaviour of \gls{MBR}. A distinction is made between three different membrane states; clean, reversibly fouled and irreversibly fouled, allowing for a real-time decision on possible maintenance actions. A similar method is developed in \cite{Drews2009} where the dominant fouling mechanism is identified by fitting  different models to the data, each describing different fouling mechanisms. The dominant fouling mechanism follows from the best fitting model. Figure \ref{foulingID} presents the results of this approach. 
+
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.7\textwidth]{figs/foulingIDB.PNG}
+\caption{Comparison between experimental and simulated  flux/time curves \citep{Drews2009}.\label{foulingID}}
+\end{center}
+\end{figure}
+
+\section{Profilometry}
+%The current model still has a few shortcomings. The generation of the flow profile is only performed once, at the beginning of the simulation. Consequently, this static profile does not change during simulation. As fouling progresses, the filtration resistance increases and for a constant pressure filtration this means that the permeate flux declines over time. Secondly, one can expect the velocity profile at the membrane surface to change as the cake layer grows disproportionally in space. Periodically adjusting the liquid flow profile would be a rational improvement of the model. \par 
+An important part of this thesis is the development of an experimental setup for the calibration and validation of the spatio-temporal model for filter cake formation. %Currently, the attachment of the particles to the membrane and filter cake is realised with an empirical equation that is modulated with a parameter that needs calibration ( \textbf{zie sectie...}). After calibration, the model performance will be assessed through validation. Calibration and validation are traditionally performed by gathering data of the flux and TMP during a filtration experiment. 
+Membrane filtration models are mostly calibrated and validated with data on the \gls{TMP} and flux during operation. However, considering that the main goal of this model is the characterisation of filter cake formation mechanisms, it is meaningful to gather data about the filter cake properties for a goal-directed calibration/validation. This will be accomplished by a profilometric characterisation of the filter cake. \\ \\ 
+Profilometry, surface metrology, surface topography, etc.\ are different terms used in literature to more or less describe the same process i.\ e.\ the three-dimensional characterisation of a surface. The distinction between these terms lies in subtleties that are not relevant for this study. These terms are therefore regarded as interchangeable. \par
+Profilometric techniques can be classified in numerous categories, according to the characteristics of the technique. In order to achieve a simple and straightforward classification, a distinction is made between optical methods and non-optical methods. It is nonetheless important to keep in mind that the main goal of this overview is to find a suitable technique for the calibration/validation of the model and not a perfect classification of the profilometric techniques.
+\subsection{Non-optical methods}
+The prominent method in this category is \emph{\gls{SP}}. In stylus profilometry, the surface is characterised by the interaction of a sensing tip with the sample. The vertical displacement of the tip is recorded while the stylus is moving across the sample's surface \citep{Lonardo2002}. %The tip size plays a critical role in the resolution of the profilometer \citepLonardo2002}). 
+Two main disadvantages of stylus profilometry can be identified \citep{stout2000,Lonardo2002}. Firstly, this method is generally quite slow, taking a long time to characterise a small area of the specimen. Secondly, the contact between the instrument and sample can result in the deformation of the sample and an underestimation of the height of soft surfaces.  Consequently, stylus profilometry is not suitable for the surface characterisation of a filter cake as it most certainly classifies as ``soft". \par
+\emph{\Gls{AFM}} is generally not regarded as stylus profilometry because there is no contact with the surface, since it is characterised via repulsive forces exterted on the sensing tip. Nevertheless, the other working principles are quite similar. Atomic force microscopy is mostly used for submicron measurements and its nanometer scale resolution would be excessive for filter cake measurements, which are in the micrometer scale \citep{Search1997}. \par
+In \emph{\gls{STM}} a metal tip scans the surface of the sample. A voltage is applied over the gap between the tip and the specimen. When the conducting tip is close to the surface,  electrons will bridge the gap between the surface and the tip, resulting in a current. Changes in surface height result in changes in magnitude of the current that are subsequently recorded. STM is used for the surface characterisation on an atomic level and is therefore not a suitable technique for this research \citep{Binnig1982,Hansma1987}.\par
+%\todo{afbeelding misschien wel handig hier?}
+\emph{\Gls{SEM}} utilises a beam of electrons to form a three-dimensional image of the investigated surface. This beam is produced in an electron gunner or electron emitter, accelerated by a set of anodes and focused on the specimen by a series of electromagnets. On collision, one part of the electrons will reflect of the surface, another part excites the atoms of the specimen, thereby producing secondary electrons, and other electrons penetrate the sample producing X-ray radiation. Both types of electrons and the X-rays can be captured by specialised detectors giving rise to a profilometric image when the electron beam is moved over the surface of the sample in a scanning motion \citep{Reimer2013,sem2}.
+%https://books.google.be/books?id=j5nsCAAAQBAJ&printsec=frontcover&dq=scanning+electron+microscope&hl=nl&sa=X&redir_esc=y#v=onepage&q=scanning%20electron%20microscope&f=false
+\subsection{Optical methods}
+The number of optical methods for the three-dimensional characterisation of a surface is vast. It is impossible to discuss all these techniques, therefore a selection is made of the most distinct types in order to still give a comprehensive overview. \\ \\
+Interferometry is based on the interaction of multiple light beams and uses the superposition of waves to gather information about the surface characteristics \citep{Hariharan}. The number of measurement techniques based on interferometry is enormous. However, the working principle of all these techniques is basically the same. A beam of light, is split by a glass plate with a semi-reflective coating; one beam acts as a reference and is directly reflected via a mirror to the detector while the second beam is reflected on the surface of the sample. %A compensator plate is introduced to correct for the fact that one beam crosses the splitter thrice and the other only once. 
+These two beams are recombined by the beamsplitter and will interfere. Figure \ref{interferometer} presents a schematic overview of such a generic interferometer. Constructive interference is observed when the path length is the same for both beams, giving rise to the interference signal with the largest amplitude and hence the highest intensity. The signal intensity drops with bigger path differences (the difference cannot exceed the wavelength). Consequently, an image is obtained with different intensity values for each pixel. By altering the path length of one of the beams it is possible to scan for other heights in the sample and a profilometric image is formed. For these kind of measurements, white light is mostly used as it produces more accurate results than monochromatic light. \par
+\emph{\Gls{WLI}} has a resolution limit of approximately 0.5\,$\mathrm{\mu m}$ due to diffraction effects \citep{Conroy2006,Hariharan}. 
+Problems can arise from the presence of thin films in the specimen that cause errors in the measurements \citep{Conroy2006}. Hence, the presence of an aqueous layer in the filter cake poses a potential risk for its profilometric characterisation. \par
+% \todo{WN: Misschien even opzoeken hoe dik een waterfilm rond slibpartikels is?, BDj niet gevonden}
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.5\textwidth]{figs/interferometer.png}
+\caption{The basic outline of an interferometer \citep{Search1997}.} 
+\label{interferometer}
+%https://books.google.be/books?id=sWbGSSQ6fPYC&pg=PR1&lpg=PR1&dq=Basics+of+Interferometry,+Second+Edition.&source=bl&ots=zXvmd_7pNt&sig=PE1YIfLl179kpaDoTfvV6ar-8AE&hl=nl&sa=X&ved=0ahUKEwix75WE9svJAhVDVBQKHSM6ApQQ6AEIVzAI#v=onepage&q=Basics%20of%20Interferometry%2C%20Second%20Edition.&f=false}.\label{foulingID}}
+\end{center}
+\end{figure}
+%Misschien nog uitwerken omtrent de compensator plate
+%direct technique?
+  %nadeel en voordeel van deze techniek \cite{Conroy2006} p460  % enige bron die deftig het werkingsprincipe uitlegt is http://www.polytec.com/int/solutions/3-d-surface-profiling/basics-of-white-light-interferometry/
+% https://books.google.be/books?id=sWbGSSQ6fPYC&pg=PR1&lpg=PR1&dq=Basics+of+Interferometry,+Second+Edition.&source=bl&ots=zXvmd_7pNt&sig=PE1YIfLl179kpaDoTfvV6ar-8AE&hl=nl&sa=X&ved=0ahUKEwix75WE9svJAhVDVBQKHSM6ApQQ6AEIVzAI#v=onepage&q=Basics%20of%20Interferometry%2C%20Second%20Edition.&f=false https://books.google.be/books?hl=nl&lr=&id=oBw7AAAAIAAJ&oi=fnd&pg=PR13&dq=H.+Steel,+Interferometry&ots=GcK3r5DCXK&sig=rrYM-kd6cBsAq3PhEIMBLiPnlNI#v=onepage&q=H.%20Steel%2C%20Interferometry&f=false
+\emph{\Gls{DICM}} or Nomarski microscopy also adopts the principles of interferometry, but both the reference and sample ray go through the sample in two adjacent points. The difference in height of those points translates in a phase shift between both rays. The rays are recombined and the resulting interference is proportional to the difference in path length of the rays. A differential image is obtained of the surface \citep{Lang}. \par
+Other interferometry related methods are \emph{\gls{DHM}} \citep{Kemper2007a} and \emph{\gls{OCT}}  \citep{Podoleanu2012}. The working principle of these techniques is very similar to \gls{DICM} and will therefore not be elaborated. \par
+% And whatever this technique is:  https://www.osapublishing.org/view_article.cfm?gotourl=https%3A%2F%2Fwww%2Eosapublishing%2Eorg%2FDirectPDFAccess%2FBE2C8123-AB46-92F6-5908192D5578E43C_86034%2Foe-13-22-8693%2Epdf%3Fda%3D1%26id%3D86034%26seq%3D0%26mobile%3Dno&org=
+%Het staal moet doorzichtig zijn dus dat is voor onze toepassing niet haalbaar: het membraan zou er afmoeten en dit vergt teveel manipulatie van het staal. Kan weerlegt worden want het principe kan ook toegepast worden op een systeem waarbij gewerkt wordt met reflectie ipv erdoor te gaan \cite{Lang}
+  \emph{\Gls{CLSM}} is basically a conventional light microscope with the ability to illuminate a small section of the sample. The reflected light from the sample is filtered through a pinhole that filters out all the out-of-focus light. Hence, it is possible to illuminate a certain viewing depth, which is not possible with a conventional light microscope.  The combination of images from different depths gives rise to a three-dimensional structure \citep{Hocken2005}. This method is technically not a profilometric technique as it actually visualises the internal structures of a specimen. The maximal atainable resolution of confocal laser scanning microscopy is about the same as that of a conventional light microscope \citep{PawleyJBandMasters1996}. %Confocal laser scanning microscopy is part of the focus detection techniques which also includes \emph{focus variation} \citep{focVar}, \emph{intensity detection} and \emph{contrast detection} \citep{Toru2015}. \par JB: weglaten
+  The use of \gls{CLSM} as a tool for the profilometric characterisation of surfaces is restricted by its low scanning rate and the problems that arise with the occurence of different optical properties in one specimen \citep{Cha2000}.  %http://emerald.ucsd.edu/Docs/3Dprofilometry.pdf
+\emph{Pattern projection profilometry} or structured light profilometry establishes a three-dimensional profile by projecting light patterns on the object and capturing the distortion of the pattern, from a different angle, with a camera. From an angle, the differences in height of the object results in a phase shift of the projected pattern (Figure \ref{ZHanger}). The captured image is subsequently analysed to calculate the underlying phase distribution. This technique is, along with the interferometric techniques, ``indirect'' which means that calibration is needed to map the phase distribution to height measurements \citep{Gorthi2010}. 
+Pattern projection profilometry includes \emph{\gls{FPP}} \citep{Zhang2010} and \emph{\gls{FP}} \citep{Su2001}. Also \emph{\gls{MP}} is considered as pattern projection profilometry. This technique projects two light gratings on the object, but the underlying principles are the same \citep{moire}.
+\begin{figure}[H]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.5\textwidth]{figs/fringeprojection.png}
+\caption{Illustration of the principle of a digital fringe projection profilometer as an example of the working principle of pattern projection techniques \citep{Zhang2010}.} 
+\label{ZHanger}
+\end{center}
+\end{figure}
+
+In \emph{\gls{WLAC}}, a white light source is passed through a concave objective lense. The different refractive indices for each wavelength result in a dispersion of the light beam and each wavelength is refocused at a different distance from the lense. The confocal configuration assures that only the in-focus wavelength reaches the detector for which the wavelength is determined and the corresponding height of the sample is obtained. This technique is insensitive to ambient light and stray reflection, there is no need for vertical scanning to sense the surface height and it is a direct technique. For these reasons, this technique seems to be ideal for the profilometric characterisation of a filter cake \citep{Leach2011,nanovea}. A schematic outline of such a system is presented in Figure \ref{wlccp}.   
+\begin{figure}[]
+\begin{center}
+\hspace{-1.5cm}
+\includegraphics[width=0.5\textwidth]{figs/Chromaticconfocal.png}
+\caption{Schematic representation of a white light axial chromatic confocal profilometer \citep{nanovea}.} 
+\label{wlccp}
+\end{center}
+\end{figure}
+The lateral resolution limits and relative prices of the different profilometric techniques are denoted in Table \ref{tab:prof}.
+% \todo[inline]{IN: Tabel 2.2 niet echt op zijn plaats in de literatuurstudie, WN \& JB: We vinden dit wel echt een meerwaarde}
+%\todo[inline]{dat is onze microsoop zie wouter zijn samenvatting}
+%\todo[inline]{resolution nog eens kwantificeren van sommige technieken staat het in Search1997} 
+%\todo[inline]{tabel techniek classification, resolution, price, remarks\\ for stm the surface needs to be conducting \citepSearch1997})} 
+% \todo[inline]{IN: lijkt me  ook niks voor literatuurstudie}
+\begin{table}[H]
+  \caption{Overview of the lateral resolution and price class of the profilometric thechniques. References: \cite{Song} [1], \cite{sem} [2], \cite{Conroy2006} [3], \cite{Kemper2007a} [4], \cite{PawleyJBandMasters1996} [5], \cite{nanovea} [6] \label{tab:prof}}
+  \begin{flushleft}
+    \begin{tabular}{lllllc}
+      \toprule 
+      & & \textbf{resolution} & \textbf{price} &  \textbf{remarks} \\
+      \midrule
+      \large{\textbf{Non-optical}} \\
+      & \gls{SP} & \unit{0.5}{\micro\metre} \textsuperscript{[1]} & \$ & dependent on the stylus size  \\ 
+      & \gls{AFM}& \unit{0.1}{\nano\metre} \textsuperscript{[1]} & \$\$ \\
+      & \gls{STM}& \unit{0.1}{\nano\metre} \textsuperscript{[1]} & \$\$  \\
+      & \gls{SEM}& \unit{1}{\nano\metre} \textsuperscript{[2]} & \$\$\$ \\
+      \toprule
+       \large{\textbf{Optical}} \\
+      & \textbf{Interferometry} &  & & diffraction limited\\
+      & \gls{WLI} & \unit{0.5}{\micro\metre} \textsuperscript{[3]}& \$ \\ 
+      & \gls{DICM} & \unit{0.5}{\micro\metre} & \$   \\ % diffraction limited
+      & \gls{DHM} & \unit{0.5}{\micro\metre}& \$ & good axial resolution (5 \unit{\nano\metre}) \textsuperscript{[4]} \\ 
+      & \textbf{Focus detection} \\
+      & \gls{CLSM} & $<$ \unit{0.5}{\micro\metre} \textsuperscript{[5]} & \$\$ & close to diffraction limit \\
+      & \textbf{Pattern projection} & & & supermicron measurements \\
+      & \textbf{Other} \\
+      & \gls{WLAC}  & \unit{1}{\micro\metre} \textsuperscript{[6]} & \$ \\
+      \bottomrule
+    \end{tabular}
+  \end{flushleft}
+  \label{tab:multicol}
+\end{table}
+%\subsection{Optical methods}
+%\subsubsection{Interferometry}
+%An interferometer is any optical configuration that causes light of finite coherence [finite coherence nog uitleggen] to take more then one path through the system, and where the light paths subsequently cross or combine with a path-length difference. Interferometry can be subdivide into two distinct classes, wavefront-splitting interferometry and amplitude-splitting interferometry. \par
+%In wavefront-splitting interferometry the optical paths are not in parallel and cross, in contrast to amplitude splitting where a single optical path splits to take different paths before crossing or combining. [meer uitleg nodig]{Optical source: interferometry for Biology and Medicine}
+%
+%
+%\subsubsection{White light Axial chromatism}
+%\subsubsection{Differential interference contrast microscopy}
+%\subsubsection{Focus detection methods}
+%\subsubsection{Pattern projection method}
+%\subsubsection{Confocal Microscopy}
+%To understand the principle of confocal microscopy, the basic working principle of light microscopy needs to be briefly ellaborated. \par
+%
+%In light microscopy, objects are enlarged or magnified with a convex lens that bends light
+%rays by refraction. Diverging rays from points within the object (object points) are made to
+%converge behind the convex lens and cross over each other to form image points (i.e., a
+%focused image). In the compound microscope there are usually two magnifying systems in tandem, one defined by the objective and the other defined by the eyepiece \cite{Keller2006}.
+%[Afbeelding]
+%
+%In a confocal microscope the conventional microscope condenser is replaced by a second objective lens. A pinhole, which limits the field of view, is positioned on the microscope axis. The field of view is further limited by a second pinhole in the image plane placed confocally [woord verklaren] to the illuminated spot in the specimen and to the first pinhole. With this methodology light scattered from parts other than the illuminated point on the specimen is rejected. 
+%The specimen is scanned with a point of light by moving the specimen over short distances in a raster pattern [HandBook of Biological confocal].
+%
+%[Afbeelding invoegen HandBook of Biological confocal microscopy figuur1.1]
+%[kan nog iets vermeld worden over het feit dat dit niet echt profilometry is omdat je doorheen je sample kijkt]
+%
+%
+%\subsection{Contact and pseudo-contact methods}
+%\subsubsection{Stylus profilometry}
+%In stylus profilometry the surface is characterised by the vertical movement of a tip, which follow the profile of the surface. This movement is acquired as a function of the horizontal displacement. It is trivial that the tip size plays a critical role in the resolution of the profilometer.
+%\par
+%An important disadvantage of stylus profilometry is the long time required to acquire data. [Zoeken naar enige tijd indicatie van hoelang dit is]
+%stylus profilometers are available in portable format, which can be important in the conduction of field experiments\cite{Lonardo2002}.
+%\par 
+%These types of profilometers tend to be robust and have fundamentally superior measurement accuracies in many engineering environments. stylus profilometers can be designed with nanometer level sensitivity, has an inherent immunity to dusty or wet surfaces and can measure either metallic or nonmetallic materials. \cite{Bauza2006} Stylus profilometry is a direct technique.
+%\subsubsection{Atomic Fore Microscopy (AFM)}
+%In an atomic force microscope a small needle, also referred to as the tip, interacts with the sample's surface. The tip moves over the surface of the sample and is deflected by the interaction forces betwaan the tip atoms and the sample atoms.The tip is attached to a cantilevered spring which is capable of sensing these small forces. The sensed forces are transduces to generate molecular images\cite{Lal1994}. 
+%\par  
+%The needle can be operated in contact mode where the needle touches the sample or the needle can oscillate at a finite distance from the surfaces. This mode is called the noncontact mode. The noncontact mode has the advantage that is doesn't disrupt the surface.\cite{Lal1994}
+%\par
+%In both modes a deflection force is``perceived" by the tip. This deflection force needs to be translated into a detectable signal. Often a optical system is used where a laser beam reflects off the cantilever. The reflected beams are captured and converted into electrical signals by position-sensitive photo detectors. A more detailed explanation of this mechanism can be found in \cite{Lal1994}.
+%\par 
+%A more recent mode of operations is called ``tapping mode", this is a combination of the contact and noncontact mode. The cantilever is oscillated (noncontact) but also comes into contact with the surface of the sample (contact){Lal1994}.
+%\par
+%Other modes exist but fall outside the scope of this dissertation. 
+%
+%\subsubsection{Scanning Tunneling Microscopy}
+%Oude techniek ?
+%
+%\subsubsection{Electron microscopy}
+%In electron microscopy a destinction can be made between transmission electron microscopy (TEM), scanning electron microscopy, reflection electron microscopy and scanning transmission electron microscopy.
+%
+%
+%
+%
+%
+%
+
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}

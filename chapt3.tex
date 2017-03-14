@@ -1,0 +1,148 @@
+\hyphenation{}
+\chapter[Spatio-temporal model of filter cake formation]%
+{Spatio-temporal model of filter cake formation \label{spatModel}}
+The general framework for the spatio-temporal model of filter cake formation, established by \cite{Ghijs2014}, has an Euler-Langrangian stucture with two model layers (Figure \ref{fg:modellayers}). The dispersed phase is modelled through a Lagrangian approach where each particle and its modelled quantities (velocity, forces, etc.\ ) are individually tracked by a moving frame of reference (\gls{ABM}). The continuous phase is modelled through computational fluid dynamics for which a stationary, Eulerian reference frame is adopted.
+This chapter will first summarise the assumptions of the model developed by \cite{Ghijs2014} and justify the revision of these assumptions to account for the model extensions. In the remainder, each of the model layers will be elucidated in order to have a thorough understanding of the model before it is extended  in Chapter \ref{ModelDev}.
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/modellayers.png}
+    \caption{Schematic representation of the model layers \citep{Ghijs2014}.}
+    \label{fg:modellayers}
+\end{figure}
+
+\section{Assumptions \label{assumptions}}
+This study aims to develop a model that describes filter cake formation in \gls{MBR}s as realistically as possible. It is nevertheless necessary to simplify certain processes in order to reduce the computational demands and avoid the overcomplication of the model \citep{bender2000}. Therefore, assumptions were made in \cite{Ghijs2014} about the nature of the particles and the system in which they are modelled. Some of these assumptions are well-founded and will be retained here, while others are revised and the model is extended with the necessary processes to account for the extra complexity. \\ \\
+A first assumption is that all particles in the system are \textbf{rigid} and \textbf{perfect spheres}. This originates from the force balance on the particles as some of these equations are derived for rigid, perfect spheres in a flow field. This assumption might seem too simplistic, but in a bottom-up modelling approach this is a good starting point. It is also assumed that all particles are of the \textbf{same size with diameter \gls{partDia}}. For most of the filtration processes the dispersed phase is made up of particles of different sizes and shapes and monodisperse solutions are rare. Moreover, polydispersity has a significant impact on filter cake formation and this assumption is therefore relaxed in this study. The corresponding model extension involves a considerable programming effort as the implementation was strongly relying on the assumption of monodispersity. This extension is discussed in Chapter \ref{ModelDev}. %Secondly, the way in which the filter cake is build up needs to be revised. The current model implementation also depends on fixed particle diameters, therefore a new collision-detection algorithm needs to be worked out. \par
+\par
+There is \textbf{no interaction} of free moving particles \textbf{in the bulk phase}. Hence, there are no collisions and free moving particles do not exert forces on each other. Coagulation of free moving particles is consequently not considered. This assumption is justified, given the fact that this model is constructed for laminar flows and the number of particle collisions in the bulk fluid is limited.\par
+The system is modelled in \textbf{two dimensions}, the forces and velocities describing the movement of the particles in the bulk phase and the \glspl{PDE} governing the fluid behaviour are described in the $x$- and $y$-direction. In \cite{Ghijs2014} it was assumed that adding a third dimension would not impact the simulation results significantly so for computational efficiency this dimension was left out. This assumption is also revised in this study as simulation results in two dimensions showed an unrealistic ``piling'' of the particles in the filter cake. The addition of a third dimension might resolve this issue and a system modelled in three dimensions is more generic. \par
+The \textbf{flow profile} of the fluid \textbf{is only computed once} at the beginning of the simulation. This assumption implies a steady-state flow of the continuous phase throughout the entire simulation, so that the formation of filter cake on the membrane surface has no effect on the liquid flow profile. This ``one-way'' assumption is further discussed in Chapter \ref{ch:disc} as it is expected that the formation of filter cake greatly influences the liquid flow in close proximity to the filter cake \citep{Picioreanu2009}. This, in turn, will have an impact on the filter cake formation and for the accurate representation of this process, the model needs to be extended with a bidirectional coupling between the two model layers. \par
+Concerning filter cake formation as such, particles attach with a probability that is inversely proportional to their absolute velocity (section \ref{sec:FCForm}) and attached particles \textbf{cannot detach}, regardless of the shear stresses induced by the continuous movement of liquid over the filter cake surface. This shortcoming is partially compensated by the abovementioned adhesion probability. However, a complete force balance that supports detachment of particles from the cake layer will lead to more realistic simulation results (Chapter \ref{ch:disc}). \par
+The \textbf{flux through the membrane is assumed to be constant} in space and time. As the formation of a filter cake layer on top of the membrane results in an increased filtration resistance, the flux is expected to change locally according to the fouling intensity in constant flux membrane filtration systems. The flux will be higher in ``cleaner'' regions and lower in heavily fouled regions. Hence, it is necessary to extend the model to account for this, which is discussed in Chapter \ref{ch:disc}. %the flux decrease due to the increased filtration resistance, to account for this process.
+
+\section{Dispersed phase \label{sec:dispPhase}}
+The Lagrangian model of the dispersed phase consists of a system of differential equations that describes a force balance of the free moving particles. The particle's velocity is determined at every time step and is expressed relatively with respect to the fluid velocity, i.e.\ $\gls{Ur}=\gls{Up} - \gls{Uc}$, with \gls{Up} [\unit{\metre\,\reciprocal\second}] the relative velocity of the particle and $\gls{Uc}$ [\unit{\metre\,\reciprocal\second}] the local fluid velocity. Newton's second law is used to determine the particle velocity and follows from \citep{Worner2003,Ghijs2014}:
+\begin{equation}
+ m_\mathrm{p} \, \frac{d}{dt} \, \gls{Up}(t)= \vecb{F}_\mathrm{surf} + \vecb{F}_\mathrm{body},
+ \label{newton2}
+\end{equation}
+with $m_p$ [\unit{\kilogram}] the particle mass. The force balance is divided in body forces $\vecb{F}_\mathrm{body}$  [\unit{\newton}] that are distributed over the entire volume of the particle and surface forces $\vecb{F}_\mathrm{surf}$ [\unit{\newton}] that act on the surface of the particles (Figure \ref{forcebal}). For a particle immersed in a fluid, gravity \gls{Fgrav} [\unit{\newton}] is the only body force. The surface forces originate from \citep{Worner2003,Ghijs2014}:
+
+\begin{itemize}
+ \item $\vecb{F}_\mathrm{arch}$ [\unit{\newton}] the Archimedes force;
+ \item $\vecb{F}_\mathrm{p}$ [\unit{\newton}] the force induced from the pressure gradient \gls{nabP};
+ \item $\vecb{F}_\mathrm{hydr}$ [\unit{\newton}] the resulting hydrodynamic force, which consists of:
+ \begin{itemize}
+  \item $\vecb{F}_\mathrm{drag}$ [\unit{\newton}] the drag force that minimises the difference between fluid velocity and the particle velocity;
+ \item $\vecb{F}_\mathrm{am}$ [\unit{\newton}] the added mass force that accelerates the fluid surrounding the particle;
+ \item $\vecb{F}_\mathrm{hist}$ [\unit{\newton}] the history force, which originates from the lagging fluid boundary layers surrounding the accelerating particle;
+ \item $\vecb{F}_\mathrm{lift}$ [\unit{\newton}] the lift force, describing shear lift that is caused by the intertia effects in the viscous flow around the particle.
+  \end{itemize}
+ \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.7\columnwidth}
+    \input{figs/forcebalance.pdf_tex}
+    \caption{Schematic representation of the forces that act on free moving particles in a fluid, a negative \gls{Ur} is assumed for the direction of the forces \citep{Ghijs2014}.}
+    \label{forcebal}
+\end{figure}
+
+The total force balance on the particle can be written as:
+
+\begin{equation}
+ \vecb{F}_\mathrm{tot}=\vecb{F}_\mathrm{g}+\vecb{F}_\mathrm{arch}+\vecb{F}_\mathrm{p}+\vecb{F}_\mathrm{drag}+\vecb{F}_\mathrm{am}+\vecb{F}_\mathrm{hist}+\vecb{F}_\mathrm{lift} \, .
+ \label{totalForcebal}
+\end{equation}
+ Now, the acceleration of the particles can be derived from Newton`s second law (Eq.\ \eqref{newton2}). However, this approach does not take into account the effects of stationary fluid boundaries at the membrane surface. \cite{Faxen1922} proposes the addition of a correction factor to include these effects. Introducing the Fax\'en correction factor in Eq.\ \eqref{totalForcebal} results in the Maxey-Riley equation for the overall force balance on a particle submersed in a fluid \citep{Maxey1983}:
+
+ \begin{equation}
+\begin{split}
+	m_\mathrm{p}\frac{d}{dt}\mathbf{U}_p(t) & = -3 \pi \eta d_\mathrm{p} \left( \mathbf{U}_\mathrm{r} - \frac{1}{24}d_\mathrm{p}^2 \nabla^2 \mathbf{U}_\mathrm{c} \right) + \left( m_\mathrm{p} - V_\mathrm{p} \rho_\mathrm{f} \right) \mathbf{g} \\
+	 & - \frac{1}{2} V_\mathrm{p} \rho_\mathrm{f} \left( \frac{d \mathbf{U}_\mathrm{r}}{dt} - \frac{1}{40} d_\mathrm{p}^2 \frac{d}{dt}\left( \nabla^2 \mathbf{U}_\mathrm{c}\right) \right) \\
+	 & - V_\mathrm{p} \nabla  p - \frac{3}{2} \sqrt{\pi \eta \rho_\mathrm{f}} d_\mathrm{p}^2  \int_{\displaystyle 0}^t \frac{d\mathbf{u}(\tau)/d\tau}{\sqrt{t-\tau}}d\tau \\
+	 & - 1.615 \rho_\mathrm{f} d_\mathrm{p}^2 \left( \mathbf{U}_\mathrm{r} - \frac{1}{24}d_\mathrm{p}^2 \nabla^2 \mathbf{U}_\mathrm{c} \right) \sqrt{\mu_\mathrm{f} \left|\mathbf{\kappa} \right|} \; \mathrm{sgn}\left(\mathbf{\kappa} \right),
+	 \label{maxeyRiley}
+\end{split}
+\end{equation}
+ with $ \mathbf{u}  = \mathbf{U}_\mathrm{r} - \frac{1}{24}d_\mathrm{p}^2 \nabla^2 \mathbf{U}_\mathrm{c}$ in the history term, \gls{Vp} [\unit{\cubic\metre}] the particle volume and $\kappa$ [\unit{\reciprocal\second}] the fluid velocity gradient defined as,
+ \begin{equation}
+  \kappa_\mathrm{i}= \frac{d \mathbf{U}_\mathrm{c,j}}{di}
+ \end{equation}
+where $i$ and $j$ represent directions in a two-dimensional Cartesian coordinate system.
+  \section{Filter cake formation}
+ By solving Eq.\ \eqref{maxeyRiley} one can accurately simulate the behaviour of the dispersed particles for a given fluid flow profile. %The filtration imposes a lateral movement of the continuous phase, this momentum is transferred to the particles by means of the drag force \textbf{$\vecb{F}_\mathrm{drag}$}. and the particles are consequently ``pulled'' towards the membrane.
+ The first step in modelling the filter cake formation is the detection of collisions of particles with the already formed cake layer or the membrane surface. This is accomplished with a collision detection algorithm which is detailed in Chapter \ref{ModelDev}. To ensure that not all collisions of the particles with the filter cake result in adhesion, this process is governed by a probability. This function defines the probability \gls{PUp} [\,-\,] for a particle to attach to the filter cake in the event of a collision and is inversely proportional to the particle`s momentum:
+ \begin{equation}
+	P(\gls{Up}) = e^{-k\, \gls{Up}},
+	\label{eq:stickychance}
+\end{equation}
+
+with \gls{k} [\,-\,] a parameter representing the ``stickiness'' of the particles which needs to be determined experimentally.
+Equation \eqref{eq:stickychance} is the only empirical equation and does not fit in the model's mechanistical mindset. Its role, however, is temporary and will become redundant when a full force balance is in place for particles in the filter cake (chapter \ref{ch:disc}).
+
+\section{Continuous phase}
+This model layer describes the behaviour of the continuous phase as it flows continuously into the filtration unit via the inlet and is discharged at the outlet and through the membrane pores.
+\subsection[Fluid dynamics]{Fluid dynamics}\label{sec:FD}
+The continuous phase is modelled through an Eulerian approach, the control volume is included in a stationary reference frame and the flow quantities such as velocity and pressure are described for each fixed point inside this control volume. The flow pattern and fluid velocities of the continuous phase are obtained by solving the mass, momentum and energy conservation equations, written as a set of \glspl{PDE}. %\gls{CFD} is the scientific domain that uses numerical methods to solve these equation in order to \textbf{simulate} fluid flow, heat transfer or other phenomena such as chemical reactions.
+Depending on the fluid characteristics of the modelled system, such as the rheology and flow regime (turbulent/laminar flow, single phase/multiphase system), different sets of \glspl{PDE} are used \citep{Versteeg1995,boekMS}.\\ \\
+The first equation describes the conservation of mass within a given volume \gls{Omega} [\unit{\cubic\metre}] and is based on the following axiom: the rate of increase of mass in a fluid element is equal to the net rate of flow into the fluid element since no mass can be created or destroyed, assuming incompressibility. So, %Versteeg1995
+
+\begin{equation}
+\frac{\partial \rho_\mathrm{f}}{\partial t} + \nabla ( \rho_\mathrm{f} \mathbf{U}_\mathrm{c}) = 0, \label{masscon}
+\end{equation}
+
+with $\mathbf{U}_\mathrm{c}$ [\unit{\metre\,\reciprocal\second}] the fluid velocity in the volume $\Omega$ and $\rho_\mathrm{f}$  [\unit{\kilogram\,\rpcubic\metre}] the density. The compressibility is negligible for most liquids and $\rho$ can be assumed as constant.  Consequently, for incompressible fluids \citep{Versteeg1995}:
+\begin{equation}
+\frac{\partial \rho_\mathrm{f}}{\partial t} = 0,
+\end{equation}
+and
+\begin{equation}
+ \nabla ( \rho_\mathrm{f} \mathbf{U}_\mathrm{c} ) = \rho_\mathrm{f} \nabla \mathbf{U}_\mathrm{c},
+\end{equation}
+so that
+\begin{equation}
+ \nabla \mathbf{U}_\mathrm{c} = 0.
+\label{simpmasscon}
+\end{equation}
+
+The conservation of momentum, as a second equation, is governed by a force balance acting on $\Omega$.
+By taking into consideration the body forces such as gravity and the surfaces forces such as the compressive force and friction force and inserting them into Newton's second law of motion, one obtains:
+\begin{equation}
+ \rho_\mathrm{f} \left( \frac{\delta \mathbf{U}_\mathrm{c}}{\delta t} + \mathbf{U}_\mathrm{c}\cdot \nabla \mathbf{U}_\mathrm{c} \right) = - \nabla p + \nabla \cdot \mathbf{\tau}  + f,
+\label{momcon}
+ \end{equation}
+
+with \gls{tau} [\unit{\newton}] the viscous stress tensor and $f$ [\unit{\newton\,\reciprocal\metre}] the external body forces. In most of the cases, $f$ only consists of the gravitational force \citep{Versteeg1995,boekMS}. \par
+For an incompressible, Newtonian fluid the viscous stresses are proportional to the rates of deformation and constant viscosity can be assumed. Consequently, the stress tensor $\tau$ in \mbox{Eq.\ \eqref{momcon}} can be written in terms of the viscosity $\mu_\mathrm{f}$ and fluid velocity, leading to the Navier-Stokes equation for incompressible flow \citep{Versteeg1995},
+\begin{equation}
+ \rho_\mathrm{f} \, \left( \frac{\delta \mathbf{U}_\mathrm{c}}{\delta t} + \mathbf{U}_\mathrm{c}\cdot \nabla \mathbf{U}_\mathrm{c} \right) = - \nabla p + \mu_\mathrm{f} \, \nabla^2 \mathbf{U}_\mathrm{c} + f \, .
+\label{simpmomcon}
+\end{equation}
+
+For this study, an isothermal flow is considered and the equations for the conservation of energy are not relevant and are therefore not discussed. The set of \glspl{PDE} \eqref{simpmasscon} and \eqref{simpmomcon} is called the Navier-Stokes system for incompressible flow \citep{Versteeg1995}.
+
+\subsection{Computational fluid dynamics}
+The Navier-Stokes equations provide an accurate theoretical basis for modelling dynamic fluid behaviour. However, these equations are complex, non-linear and coupled, making the solution quite complex and in practice more often than not, analytical solutions are non-existent. It is therefore necessary to use numerical methods in order to obtain a solution for the modelling problem at hand, which is the scientific domain of \gls{CFD} \citep{boekMS}.
+\begin{quote}
+\textit{``Computational fluid dynamics is a set of numerical methods applied to obtain approximate solutions of problems of fluid dynamics and heat transfer.''}\\
+\vspace{-0.75cm}\flushright{--- \citep{Zikanov2010}}
+\end{quote}
+Depending on the characteristics of the fluid in the system, different fluid dynamics equations need to be used. The Navier-Stokes equations \eqref{simpmasscon} and \eqref{simpmomcon} are derived for a Newtonian, incompressible fluid in an isothermal system which is a good representation for modelling wastewater and other liquids used in membrane filtration systems. \par %\todo{opmerking JB die ik niet kan lezen}
+After selecting the appropriate flow equations and boundary conditions, the equations are discretised either using \glspl{FVM} or \glspl{FEM}. The \gls{FEM} is not used in this work and is therefore not elucidated.\par
+In the \gls{FVM}, the domain is subdivided into a finite number of cells with a certain volume, where the values of the different variables are integrated values of their respective cells, stored in the center points of the cells. The discretised \glspl{PDE} are obtained by constructing the conservative form for which volume integrals are used for the conservative components and surface integrals of the divergence terms \citep{boekMS,Patankar1980}. For a scalar property $\phi$, the discretised transport equations can be written as follows:
+
+\begin{equation}
+\int_t^{t+\Delta t} \left( \int\limits_V \frac{\delta(\rho\, \phi)}{\delta t} dV + \int\limits_S \rho\, U \, \phi \cdot n \, dS = \int\limits_S \Gamma \, \nabla \phi \cdot n \, dS + \int\limits_V S_\phi \, dV \right)\, dt\, ,
+%equation van boekMS
+\label{eq:disctransp}
+\end{equation}
+with $\Gamma$ the diffusion coefficient and $Q_\phi$ the source of $\phi$.
+The first term in Eq.\ \eqref{eq:disctransp} denotes a temporal derivative and is zero for the steady-state solution. The second term describes the convective flux of $\phi$ through the control volume. The third and fourth term, respectively, represent diffusion and the volumetric sources and sinks of $\phi$ that cannot go under the first three terms. A solution for the flow problem can be obtained by applying Eq.\ \eqref{eq:disctransp} to every cell in the discretised spatial domain, and utilising a numerical solving method \citep{boekMS}.
+
+%\todo[inline]{addition: turbulence models}
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}

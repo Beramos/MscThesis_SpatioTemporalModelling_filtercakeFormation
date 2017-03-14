@@ -1,0 +1,476 @@
+\documentclass[a4paper,11pt,twoside,openright]{book}
+
+%---------------------------------------------------------------------------
+%List of packages with theid respective use, you can uncomment if not used
+%---------------------------------------------------------------------------
+
+%--------------layout of the document--------------
+% this package is used to get a wider A4 paper
+\usepackage{a4wide}
+% these packages are used to produce nicer captions
+\usepackage[font={small},labelfont={bf,sf},width=0.8\textwidth, singlelinecheck=false]{caption}
+%\usepackage[font={small},labelfont={bf,sf},hang,singlelinecheck=false]{caption}
+% use the titlesec package to change the section 
+\usepackage[calcwidth,newparttoc]{titlesec}
+% use the titletoc package to change the toc
+\usepackage{titletoc}
+% hyperrefs used in the produced pdf file
+\usepackage[a4paper,plainpages=false,hidelinks]{hyperref}
+% \usepackage[a4paper,plainpages=false,colorlinks=false,allbordercolors=grey,pdfborderstyle={/S/U/W 1}]{hyperref} %underlined hyperref
+%\hypersetup{
+%}
+% this package is used for colored text
+\usepackage{xcolor}
+%\usepackage[cmyk]{xcolor}
+% this package is used for intelligent spaces
+\usepackage{xspace}
+% this package is a collection of fonts of symbols and characters that aren't always included in standard distributions of TeX
+\usepackage{amsfonts}
+% this package defines the full set of symbol names for two fonts of extra symbols included in the amsfonts collection
+\usepackage{amssymb}
+% this package is used to create custom headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% this package used to produce a different style of page numbering
+% \usepackage[auto]{chappg}
+% this package allows you to have toc's for each chapter
+% \usepackage{minitoc}
+% package used to make an index
+% \usepackage{makeidx} 
+% use this package to use times new roman fonts
+% \usepackage{times}
+% use this package for striketrough fonts
+\usepackage[normalem]{ulem}
+
+%--------------figure and table adaptations--------------
+% this package is used for figures with are spread over two or more pages
+\usepackage{captcont}
+% this package is used for creating table with multirows
+\usepackage{multirow}
+% this package enables one to put several figures next to each other
+\usepackage{subfigure}
+%Show floats (images, tables, …) only AFTER they have been referenced for the first time:
+\usepackage{captcont}
+%floats over multiple pages
+\usepackage{subcaption}
+% better control of subfigure captions
+\usepackage{flafter} 
+% enables footnotes in a table itself
+\usepackage{threeparttable}
+% Publication quality tables 
+\usepackage{booktabs}  % http://archive.cs.uu.nl/mirror/CTAN/macros/latex/contrib/booktabs/booktabs.pdf
+% needed to change rowheight in tables
+\usepackage{array}
+%figuren opnemen en eps toelaten
+\usepackage{graphicx}
+%figuren opnemen en eps toelaten
+\usepackage{graphicx}
+\usepackage{epstopdf}
+% this package is the natural frontend for pgf (a package for creating graphics in an inline manner).
+%\usepackage{tikz}
+%\usetikzlibrary{arrows,shapes,calendar,matrix,backgrounds,folding}
+% this package is used to wrap text around figures
+% \usepackage{wrapfig}
+\usepackage{float}
+
+%--------------mathematical stuff--------------
+% this package enhances the typeset appearance of mathematical formulas
+\usepackage{amsmath}
+% this package provides access to bold math symbols
+\usepackage{bm}
+% extra symbols available: http://home.online.no/~pjacklam/latex/textcomp.pdf
+\usepackage{textcomp}
+% larger integrals to adapt to specific use
+\usepackage{bigints}
+% use this package to use the garamond font
+% \usepackage[garamond]{mathdesign}
+% this package is used to create partitioned matrices
+%\usepackage{pmat}
+
+%--------------Interesting environments style--------------
+% these packages provides an environment for algorithms (cfr. Pseudocode)
+\usepackage[ruled]{algorithm2e} % info: http://archive.cs.uu.nl/mirror/CTAN/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf
+%\usepackage{algorithm}  
+%\usepackage{algorithmic}
+% The thmtools bundle is a collection of packages that is designed to provide an easier interface to theorems
+%\usepackage{thmtools}
+% use this package for url's
+\usepackage{url}
+% this package is used to get nicer chemical notations
+%\usepackage[version=3]{mhchem}
+% create todo notes to show where what needs adaptation
+\usepackage[colorinlistoftodos, textwidth=4cm, shadow]{todonotes}
+
+%--------------bibliograhy stuff--------------
+% this package is used to produce both author-date and standard numerical citations for BibTeX bibliographies
+\usepackage[round]{natbib}
+
+%--------------Others--------------
+% this package allows you to resume a previous enumerate environment
+\usepackage{enumitem}
+% this package is used to generate lipsum code
+\usepackage{lipsum}
+% this package is used for if then environments
+\usepackage{ifthen}
+%All text, within the landscape environment is rotated through 90 degrees:
+\usepackage{lscape}
+\usepackage{pdflscape} % for more output functionality: rotation etc.
+% this package is used to rotate text
+\usepackage[figuresright]{rotating}
+%\def\changemargin#1{\list{}{\voffset#1}\item[]}
+%\let\endchangemargin=\endlist% change page margins on certain pages
+\usepackage[squaren,thinqspace,thinspace]{SIunits}
+% better unit typesetting
+
+%---------------------------------------------------------------------------
+% Some adaptations and settings of the distances in document
+%---------------------------------------------------------------------------
+% set interline set to ...
+\renewcommand{\baselinestretch}{1.2}
+% space between two paragraphs should be larger than between two lines of text
+\newcommand{\npar} {\par \vspace{2.3ex plus 0.3ex minus 0.3ex}} 
+% no indentations
+\setlength{\parindent}{0cm}
+% makes all pages the height of the text on that page, and no extra vertical space is added
+\raggedbottom
+
+%---------------------------------------------------------------------------
+% making glossary of abbrevitations and symbols
+% ATTENTION: To make the glossaries working, you need to adapt your output
+% profiles of the editor you're working in (KIle, Texniccenter)
+% See http://biomath.ugent.be/wiki/index.php/Software#Glossaries for
+% Explanation.
+% If you're not able to make it work, consider using the nomenclature package, also given above
+%---------------------------------------------------------------------------
+
+%\makeindex  %index, not done in thesis
+
+% this package is used to create a nomenclature list (alternative to the glossaries package; easier, but less powerfull)
+%\usepackage[noprefix]{nomencl}
+% this package is used to create a list of symbols (alternative to the glossaries package; easier, but less powerfull)
+% \usepackage[final,pageno]{listofsymbols}
+
+%---------------------------------------------------------------------------
+%code visualization of code snippets + characteristics; done with listings
+%can be used for multiple code languages, but is different from pseudocode
+% info http://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
+%---------------------------------------------------------------------------
+\definecolor{mygreen}{rgb}{0,0.6,0}
+
+\usepackage{listings}
+\lstset{ %
+	language=Python,                % choose the language of the code
+	basicstyle=\footnotesize\ttfamily,       % the size of the fonts that are used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the code
+	backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+	showspaces=false,               % show spaces adding particular underscores
+	showstringspaces=false,         % underline spaces within strings
+	showtabs=false,                 % show tabs within strings adding particular underscores
+	frame=none,           % adds a frame around the code
+	tabsize=2,          % sets default tabsize to 2 spaces
+	captionpos=b,           % sets the caption-position to bottom
+	breaklines=true,        % sets automatic line breaking
+	breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+	xleftmargin=15pt,
+	xrightmargin=5pt,
+	commentstyle=\color{mygreen}, %teal
+	keywordstyle=\color{blue},
+	stringstyle=\color{orange},
+	escapeinside={\%*}{*}            % if you want to add LaTeX within your code
+}
+
+%---------------------------------------------------------------------------
+% new command to make superscripts in the text/tables mode
+%---------------------------------------------------------------------------
+%http://anthony.liekens.net/index.php/LaTeX/SubscriptAndSuperscriptInTextMode
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}} 
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+% new commands to create nicer sub and superscripts in math mode
+\newcommand{\sms}[1]{\mbox{\tiny{#1}}}
+\newcommand{\lss}[1]{_{\mbox{\tiny{#1}}}}
+\newcommand{\uss}[1]{^{\mbox{\tiny{#1}}}}
+
+%---------------------------------------------------------------------------
+% Short version commando to introduce figures. 
+%---------------------------------------------------------------------------
+%\mijnfiguur[H]{width=5cm}{bestandsnaam}{Het bijschrift bij deze figuur}{label}
+\newcommand{\mijnfiguur}[5][ht]{            % Het eerste argument is standaar `ht'.
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+        \end{center}
+        \caption{#4\label{#5}}          % Het bijschrift (argument 4) en het label (argument 3)
+    \end{figure}
+    }
+
+    
+% --------------------------------------------------------------------------
+%  bolt vector notation   
+% --------------------------------------------------------------------------
+\newcommand{\vecb}[1]{\vec{\mathbf{#1}}}
+
+%---------------------------------------------------------------------------
+%Chapter and Parts of the document style changes
+%online comment this part out if you will use parts as a structure above chapters
+%---------------------------------------------------------------------------
+% define color of chapter page
+%\definecolor{chaptergray}{rgb}{0.85,0.85,0.85}
+% \definecolor{chaptergray}{rgb}{1,1,1}
+%
+%% define document part label (not always needed to use parts)
+%\titleformat{\part}[display]{\flushright\bfseries\vspace{-10cm}} 
+%{\usefont{OT1}{pag}{b}{n}\fontsize{50}{54}\selectfont{PART~\thepart}} {0pt} {\vspace{0.5cm}\huge\usefont{OT1}{pag}{m}{n}\fontsize{25}{30}\selectfont\uppercase} [\thispagestyle{empty}\pagecolor{chaptergray}]
+
+% define chapter label
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{m}{n}\fontsize{22}{24}\selectfont}[{\thispagestyle{empty}\vspace{3cm}}]
+% define section label
+\titleformat{\section}[hang]{}
+{\usefont{OT1}{pag}{b}{n}\fontsize{14}{16}\selectfont\thesection}{16pt}{\usefont{OT1}{pag}{b}{n}\fontsize{14}{16}\selectfont}[{}\vspace{0.25cm}]
+%\titleformat{\section}[hang]{}
+%{\fontsize{12}{14}\bfseries\selectfont\thesection}{14pt}{\fontsize{12}{14}\bfseries\selectfont}[{}\vspace{0.25cm}]
+% define subsection label
+\titleformat{\subsection}[hang]{}
+{\usefont{OT1}{pag}{b}{n}\selectfont\thesubsection}{13pt}{\usefont{OT1}{pag}{b}{n}\selectfont}[{}\vspace{0.25cm}]
+% define subsubsection label
+\titleformat{\subsubsection}[hang]{\sffamily}
+{\usefont{OT1}{pag}{m}{n}\fontsize{11}{12}\selectfont\thesubsubsection}{13pt}{\usefont{OT1}{pag}{m}{n}\fontsize{11}{12}\selectfont}[{}\vspace{0.05cm}]
+
+% define paragraph label
+% \titleformat{\paragraph}[runin]{\sffamily}
+% {\usefont{OT1}{pag}{b}{n}\fontsize{12}{13}\selectfont\theparagraph}{}{}[{}]
+
+%---------------------------------------------------------------------------
+% define the headers and the footers
+%---------------------------------------------------------------------------
+\renewcommand{\chaptermark}[1]%
+ {\markboth{\MakeUppercase{CHAPTER~\thechapter \mdseries{~~~#1}}}{}}
+\renewcommand{\sectionmark}[1]%
+ {\markright{\MakeUppercase{\thesection \mdseries{~~~#1}}}}
+
+\renewcommand{\footrulewidth}{0pt}
+\newcommand{\helv}{%
+\fontfamily{phv}\fontseries{b}\fontsize{8}{10}\selectfont}
+%\fancyhf{}
+%\fancyhead[LE,RO]{\helv \thepage}
+%\fancyhead[LO]{\helv \leftmark}
+%\fancyhead[RE]{\helv \rightmark}
+%\renewcommand{\headrulewidth}{0.15pt}
+
+%plain-pagestyle is the chapter pages iteself
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\helv \thepage} % except the center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+%---------------------------------------------------------------------------
+% define new commands, that can later be used in the text
+%---------------------------------------------------------------------------
+\newcommand{\ismatrix}[1]{\bm{#1}}
+\newcommand{\isvector}[1]{\bm{#1}}
+\newcommand{\isstate}[1]{\mathrm{#1}}
+\newcommand{\isunit}[1]{\,\mathrm{#1}}
+
+\DeclareMathOperator*{\E}{E}
+
+%---------------------------------------------------------------------------
+% Some extra ticks and tricks
+%---------------------------------------------------------------------------
+% define tocdepth
+\setcounter{tocdepth}{2}
+% set lenght of headheight
+\setlength{\headheight}{21pt}
+% to suppress widows and orphans
+\widowpenalty=10000
+\clubpenalty=10000
+
+%---------------------------------------------------------------------------
+% Figure placement
+%---------------------------------------------------------------------------
+\graphicspath{{./figs/}}
+
+%---------------------------------------------------------------------------
+% PDF properties (you only see this as document properties (metadata) of your pdf-document
+%---------------------------------------------------------------------------
+\hypersetup{
+    pdfauthor = {Your name},
+    pdftitle = {Your title},
+    pdfkeywords = {some relevant keywords}}
+
+% Personal commands
+\newcommand{\rotlabel}[3]{\raisebox{#1}{\rotatebox[]{#2}{#3}}}
+
+
+% ------------ glossaries (symbols and abbreviations) ------------
+% ftp://ftp.dante.de/tex-archive/macros/latex/exptl/siunitx/siunitx.pdf voor de SIunitx package
+
+\usepackage[toc,acronym,shortcuts,nonumberlist,nopostdot]{glossaries}
+
+\setlength{\glsdescwidth}{\textwidth}
+\newglossary[slg]{symbolslist}{syi}{syg}{Symbolslist}
+
+%\glssetnoexpandfield{unit}
+\glsaddkey{unit}{\glsentrytext{\glslabel}}{\glsentryunit}{\GLsentryunit}{\glsunit}{\Glsunit}{\GLSunit}
+
+\makeglossaries
+\makeindex
+\newglossarystyle{symbunitlong}{%
+\setglossarystyle{long3col}% base this style on the list style
+\renewenvironment{theglossary}{% Change the table type --> 3 columns
+\begin{longtable}{lp{0.6\glsdescwidth}>{\centering\arraybackslash}p{2cm}}}%
+  {\end{longtable}}%
+%
+\renewcommand*{\glossaryheader}{%  Change the table header
+  \bfseries Symbol & \bfseries Description & \bfseries Unit \\
+  \hline
+  \endhead}
+\renewcommand*{\glossentry}[2]{%  Change the displayed items
+\glstarget{##1}{\glossentryname{##1}} %
+& \glossentrydesc{##1}% Description
+& \glsunit{##1}  \tabularnewline
+}
+} 
+
+
+%---------------------------------------------------------------------------
+%---------------------------------------------------------------------------
+% The actual document starts here
+%---------------------------------------------------------------------------
+%---------------------------------------------------------------------------
+\input{symbols}  	%made on the fly manually
+\input{abbreviations}   %made on the fly manually
+
+\begin{document}
+ %print all symbols even if they are not called in the text
+%REMARK: The overload of empty pages in the beginning is since the book
+%style is making sure you are always starting a new chapter/part/... on a right
+% page of the book. This is automatically done.
+
+% ------------ titlepage ------------
+%\input{titlepage_phd.tex} 
+\input{title_page}
+\input{copyright-thesis}
+\cleardoublepage
+
+\frontmatter
+
+%=======================================
+%We want specific page numbering style here
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\helv \thepage}                  % Paginanummers onderaan gecentreerd.
+%=======================================
+
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont}[{\thispagestyle{plain}\vspace{3cm}}]
+
+% ------------ thanks! ------------
+\input{dankwoord.tex}
+ 
+% ------------ summary ------------
+\input{chapt_english.tex}
+\input{chapt_dutch.tex}
+ 
+% ------------ table of contents ------------
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont}[{\thispagestyle{plain}\vspace{2cm}}]
+
+\tableofcontents
+\addcontentsline{toc}{chapter}{Contents} 
+
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont}[{\thispagestyle{plain}\vspace{3cm}}]
+%\newpage
+%\thispagestyle{empty}
+\cleardoublepage % makes sure the next part starts at the left again
+
+% ------------ glossaries --------------
+\setglossarystyle{super} %list, listgroup, tree, super
+
+% \renewcommand{\glossarypreamble}{\label{glossary}}
+\printglossary[title = List of Symbols, toctitle = List of Symbols, style=symbunitlong, type=symbolslist]  
+\renewcommand{\glossarypreamble}{\label{acronym}}
+\printglossary[type= acronym, title = List of Abbreviations,toctitle = List of Abbreviations] %, style=super4col
+\newpage
+
+% ------------ list of figures and tables ------------
+%\addcontentsline{toc}{chapter}{\listfigurename}
+%\listoffigures
+%\addcontentsline{toc}{chapter}{\listtablename}
+%\listoftables
+% \glsresetall % reset all glossaries
+
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{m}{n}\fontsize{22}{24}\selectfont}[{\thispagestyle{empty}\vspace{3cm}}]
+
+% ------------ TEXT ------------
+\mainmatter
+
+%=======================================
+%We want specific numbering here
+\fancyhf{}
+\fancyhead[LE,RO]{\helv \thepage}
+\fancyhead[LO]{\helv \leftmark}
+\fancyhead[RE]{\helv \rightmark}
+\renewcommand{\headrulewidth}{0.15pt}
+%=======================================
+
+%classification is dependent on the work itself
+\input{chapt1.tex} %introduction
+\input{chapt2.tex} 
+\input{chapt3.tex}
+\input{chapt4.tex} 
+\input{chapt5.tex} 
+\input{chapt6.tex} 
+%more chapters...
+
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {CHAPTER~\thechapter}}{10pt}{\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont}[{\thispagestyle{empty}\vspace{3cm}}]
+
+
+%=======================================
+%We want specific numbering here
+% Comment this block if you want the same header/footer style as in main part for the references/appendix
+% by keeping this, the numbering is simplified for bibliography/appendices
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\helv \thepage}                  % Paginanummers onderaan gecentreerd.
+%=======================================
+
+% ------------ REFERENCES ------------
+
+\newpage
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{apalike}  %apalike,phdbib.bst
+\bibliography{Thesis,ThesisWebPageRef}
+
+%\printindex                             % To print index, not done with thesis
+
+% ------------ APPENDIX ------------
+% it also possible to place your appendices in front of the references, copy then the entire app-blck
+% and but the references part in the backmatter (uncomment this)
+\appendix
+
+\renewcommand{\chaptermark}[1]%
+{\markboth{\MakeUppercase{APPENDIX~\thechapter \mdseries{~~~#1}}}{}}
+%intermezzo about making titles conform
+\titleformat{\chapter}[display]{\flushright\vspace{-3cm}\pagecolor{white}}
+  {\usefont{OT1}{pag}{b}{n}\fontsize{30}{34}\selectfont {APPENDIX~\thechapter}}{10pt}{\usefont{OT1}{pag}{m}{n}\fontsize{22}{24}\selectfont}[{\thispagestyle{plain}\vspace{3cm}}]
+
+%% APPENDIX ONE:
+\input{app1.tex}
+%more appendices
+
+%intermezzo
+%\backmatter
+\glsaddall
+\end{document}

@@ -1,0 +1,74 @@
+\chapter[Introduction]%
+{Problem statement, research objectives}%and outline
+
+\section{Introduction}
+Membrane filtration is a purely physical separation process where a suspension is drawn through a semi-permeable membrane and the suspended constituents larger than the membrane pores are retained. In descending pore size, a distinction is made between microfiltration, ultrafiltration, nanofiltration and reverse osmosis. Figure \ref{fig:memFilt} gives an overview of the different membrane filtration types along with the class of solids that are typically retained by the membrane.\par
+\begin{figure}[H]
+ \centering
+ \includegraphics[width= 0.5\textwidth]{figs/membraneFiltration.png}
+ \caption{An overview of the different membrane filtration types \citep{Luque2008}. \label{fig:memFilt}}
+\end{figure}
+The presence of membrane filtration in wastewater treatment processes is well established by its main application, the \gls{MBR}.
+An \gls{MBR} is a combination of a biological reactor for the conversion of solutes to suspended solids (activated sludge) combined with a membrane filter to remove these solids and thereby produce clean water \citep{MBRBook}. Membrane filtration replaces the traditional, gravitational sedimentation of activated sludge and produces water with a significantly higher quality \citep{Judd2008}. Moreover, \gls{MBR}s are more robust and are able to handle higher concentrations of suspended solid, leading to a higher loading capacity and consequently more compact treatment plants. Other, more exotic, applications of membrane filtration in wastewater treatment are, among others, the removal of emulsified oils and the recovery of heavy metals \citep{Fu2011,Cheryan1998}. \par
+Nowadays, membrane filtration is also being employed in a vast range of industrial, medical and biotechnological processes and the market of membrane filtration is ever growing \citep{BOEKCFMMarket,Luque2008}. %and has a high impact on industry \citep{Luque2008}. 
+Important applications of membrane filtration can be found in the paper production industry for lignosulfonate fractionation and color removal \citep{Luque2008}, in the food industry for the clarification of beer, wine and vinegar \citep{Cimini2013,Ulbricht2009,adnan2012}, in the medical sector for the continuous filtration of blood plasma and in biotechnology for the clarification  of fermentation broth \citep{Homsy2012,dsp}.
+Several potential uses for membrane filtration in renewable energy applications, such as biogas upgrading and biodiesel purification, are proposed in literature \citep{Charcosset2014,Dube2007}. In short, membrane filtration has become indispensable in industrial as well as wastewater treatment processes. \par %In biodiesel production, the use of a membrane reactor for the continuous seperation of fatty acid methyl esthers (FAME), methanol and glycerol from the tryglycerides has been documented in . 
+%In short, membrane filtration \textbf{zijn niet meer weg te denken van uit de industrie}. 
+There is, nonetheless, a major disadvantage coupled with membrane filtration, i.e.\ membrane fouling. The continuous feed and retention of suspended solids leads to the formation of fouling layers on top (filter cake) or inside the membrane and increases the resistance towards liquid permeation. Hence, operation of a membrane filtration unit requires continuous fouling control which includes backwashing, aeration and chemical cleaning of the membrane. These procedures are not able to fully regenerate the membrane due to irrecoverable fouling, leading to the insuperable decay of the membrane. The effectuation of fouling control measures and the replacement of membranes gives rise to considerable operational expenses, making membrane filtration a costly technique \citep{Owen1995}.
+% \todo[inline]{misschien goed om te benadrukken dat fouling ontegensprekelijk vasthangt aan membraanfiltratie, en dus niet te vermijden is, maar dat het wel zoveel mogelijk kan ingedijkt worden.}
+% https://en.wikipedia.org/wiki/Filter_cake
+% machtige afbeelding Luque2008
+
+%Chemical analysis \citep{Hong2016}, \\% Highlights: The new method for pesticide analysis by membrane filtration, The recovery and purification characteristics can be adjusted by membranes and eluting solvent and The membrane filtration method has high purification ability.
+
+% Why MBR?
+% \begin{itemize}
+%  \item high effluent quality
+%  \item produces less sludge
+% \end{itemize}
+% \textbf{the MBR book}
+
+\section{Problem statement}
+In spite of the growing importance of membrane filtration in industry and wastewater treatment processes, there is still little understanding of the underlying processes of membrane filtration. In order to 
+suppress fouling and prolong the lifetime of pressure-driven membrane systems as much as possible, the operation is highly conservative. Fouling remediation procedures %such as backwashing, \textbf{...}, chemical cleaning 
+are performed frequently, leading to a sub-optimal operation %with a lot of downtime 
+which is costly and inefficient both from an energetic and material perspective. Quite some efforts have been put in fouling research, but there is still poor insight in the system dynamics. Efforts to model membrane filtration and the fouling build-up are mostly empirical and typically based on the \gls{RIS} approach (Section \ref{sec:RIS}). Such models are capable of accurately predicting flux decline and \gls{TMP} increase over time, but only under the specific operational conditions for which they are calibrated. Hence, they lack extrapolation capacity to accurately predict fouling rates and optimal backflushing frequencies in a general setting. %a lot of variation in MBR function properties and conditions. 
+Moreover, \gls{RIS} models are often overparameterised and %as a consequence, 
+require frequent recalibration with a vast amount of data for accurate parameter estimations, making real-time recalibration typically not feasable. 
+
+These reasons have led to the fact that efforts have not yet resulted in a universally applicable membrane filtration model, neither do they agree on fundamental fouling principles. An in-depth understanding of the underlying fouling processes will allow for a more responsive, dynamic operation and a better design of filtration installations. Furthermore, the availability of accurate and robust fouling models will enable the implementation of more advanced control strategies, such as internal model control, model-based predictive control, or in silico tuning of process controllers. \par
+
+% requires a mechanistic approach that models the core processes as realistically as possible 
+%   \item zotte fenomenen, rollen van particles expanded layer
+%  \item Modelling can be an important tool in the elucidation of underlying mechanims. However,  currently membrane filtration is modelled through RIS-models which are empirical and deliver no insight in the underlying mechanism
+
+% Constructing an accurate and universally applicable fouling model is a complicated task as such a model needs to encompass all the core mechanims while keeping a restraint on the complexity to limit the computational requirements.
+
+\section{Objectives of this research}
+The first objective of this master thesis is the extension of the mechanistic, spatially explicit modelling framework proposed by \cite{Ghijs2014}. The model has its limitations and will be critically analysed, extended and polished, so to progress towards a physically more accurate description of all relevant processes contributing to filter cake formation. \par
+The second objective is the model-based design and realisation of a laboratory scale membrane filtration system for the calibration and validation of the abovementioned model. \par
+It should be kept clear at all times that the purpose of this model is not the real-time evaluation of operational conditions, but rather unraveling fouling mechanisms. Hopefully, this model will be able to provide valuable insights into the key mechanisms of membrane fouling needed for the future development of computationally efficient filtration models for dynamic control, backflushing prediction, \gls{CAD}, etc. 
+% \textbf{Afkomstig van de poster uit de hang:}
+% objectives
+% \begin{itemize}
+%  \item to unravel cake layer build-up mechanims
+%  \item improving empirical filtration models
+% \todo[]{empirical?!}
+%  \item Towards dynamic control and optimised water recuperation 
+% \end{itemize}
+
+% The idea is to build a very advanced model that models filter cake formation as realistically as possible, such a model However will be computationally very demanding and will not be able to use for real time simulation in control loops or for backflushing predictions. the process knowledge from this model will be used to develop an intermediate model that is more advanced than the empirical RIS approaches but less demanding than the full model which can be used for process optimisation etc...  
+
+\section{Outline: the roadmap through this dissertation}
+This dissertation starts with a literature review of membrane fouling models and profilometric techniques. Chapter \ref{spatModel} provides a description of the model developed by \cite{Ghijs2014}. The improvements of this model, performed in this thesis, are discussed in Chapter \ref{ModelDev}. Next, the results of a qualitative validation of the improved model and a scenario analysis are elucidated in Chapter \ref{ch:results}. \mbox{Chapter \ref{ch:disc}} addresses the modelling imperfections and provides guidelines for the future development of the model. Finally, this master dissertation presents the conclusions in \mbox{Chapter \ref{ch:concl}}.
+% 
+% Results
+% \begin{itemize}
+%  \item A working model for particle-fluid interactions
+%  \item Simulating build-up for multidisper mixturess.
+%  \item Designing a calibration/validation device
+% \end{itemize}
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}

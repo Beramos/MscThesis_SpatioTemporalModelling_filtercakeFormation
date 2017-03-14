@@ -1,0 +1,349 @@
+\hyphenation{}
+\chapter[Results and discussion]%
+{Results and discussion \label{ch:results}}
+
+\vspace{-2cm}
+\begin{quote}
+	One sometimes finds what one is not looking for. \\
+\textit{	 --- Sir Alexander Fleming
+}\end{quote}
+\vspace{2cm}
+
+This chapter presents the results of this work and is structured in two major sections. In the first section (\ref {sec:calVal}), the model-based design of a laboratory scale microfiltration unit is discussed. This unit will be used to collect data for the calibration and validation of the model, and it is of utmost importance that a structured flow is achieved near the membrane. In \mbox{Section \ref{sec:casestud}}, a scenario analysis is performed to assess the movement of particles and the filter cake formation under different operational conditions. First, a description of the modelled system and the assumptions are discussed and the benchmark operational parameters are disclosed. Next, a qualitative validation of the bulk phase force balance is performed in order to assess the accuracy of the predicted movement. In the end, the spatial segregation of the particles and the effect of polydispersity is investigated.  
+\section{Calibration and validation: model-based design of a \mbox{filtration} unit \label{sec:calVal}}
+In order to determine the value of the adhesion parameter $k$, which can be interpreted %\todo{note JB die ik niet kan lezen}
+as the stickiness of the filter cake, a calibration has to be performed. Furthermore, as the objective of this research is the characterisation of filter cake formation, it is important to assess the model's accuracy through validation. Both calibration and validation require the acquisition of experimental data. For that reason, a laboratory scale, crossflow microfiltration unit was designed. Such an experimental setup enables full control of the operational conditions and measured quantities during filtration. Moreover, in addition to tracking typical filtration variables such as the transmembrane pressure and flux, it is possible to use profilometric techniques for the acquisition of specific filter cake properties such as the cake thickness, surface roughness and other, more advanced features for a goal-directed calibration/validation. These filter cake properties are not readily available in literature and can provide valuable insight in filter cake formation. \\ \\
+%The ideal shape of the filtration device that induces a good flow regime for a facilitated calibration and validation was obtained through model-based design with \gls{CFD}. 
+In order to facilitate the calibration/validation of the model, an experimental filtration unit was designed with \gls{CFD} that leads to an ``ideal'' flow behaviour which is postulated in the following three design criteria.\par
+The geometry should, first of all, stimulate laminar flow as turbulence is characterised by unstructured and chaotic flow which, in modelling terms, is a lot harder to describe than the structured laminar flows. Furthermore, it will be a lot easier to unravel the fouling mechanisms taking place in the filtration device, when turbulence effects can be neglected. It is important to keep in mind that this model serves as a proof-of-principle of the physical laws and the scenarios under consideration do not necessarily have to be realistic. \par
+The flow regime is characterised by the ratio of inertial forces to viscous forces, represented by the Reynolds number Re [\,-\,] \citep{boekMS}:
+\begin{equation}
+Re = \cfrac{L\, U_r}{\mu/ \rho} \, , 
+\label{eq:Reynolds}
+\end{equation}
+with $L$ [\unit{\metre}] the characteristic length. Flow is said to be turbulent for $Re > 4000$, laminar for $Re < 2300$ and transient for $ 2300 < Re < 4000 $. The \emph{first design criterion} is thus a laminar flow with a Reynolds number below 800 in the membrane compartment. %, excluding the in- and outlet. 
+This conservative Reynolds number is instituted because it is only an indication of the flow regime and not a sufficient criterion, therefore it is to be used with caution. Turbulent flows can further be induced by rough surfaces, inlet phenomena and other processes that are not encompassed by the Reynolds number \citep{Taylor2006}. \\ \\
+The \emph{second design criterion} involves the minimisation of dead volumes within the filtration device. The fluid velocity approaches zero in these regions which will lead to an increased local fouling rate and a smaller effective volume through which there is flow, resulting in higher Reynolds numbers than calculated from Eq.\ \eqref{eq:Reynolds}. \\ \\
+The \emph{third and last design criterion} states that recirculation streams are to be avoided. This criterion is introduced so that a slice of the MBR can be used as the representation of the full system, lowering the computational demands of the model. Such an assumption is not valid when recirculation patterns occur inside the geometry. \\ \\
+For the membrane configuration, a flat sheet membrane was selected for two reasons; the shape of the filtration device for this membrane type is less bound to geometric constraints compared to other membane configurations and this configuration eases removal of the membrane for profilometric characterisation without perturbing the filter cake. This is much harder (if not impossible) to accomplish with e.g.\ tubular or spiral wound membranes. \par
+%In order to facilitate the profilometric characterisation of the filter cake, a flat membrane configuration is chosen. It is a lot easier than other configurations such as tubular and spiral membranes. 
+The membrane used in all designs has a width of \unit{10}{\centi\metre} and a length of \unit{30}{\centi\metre}, based on the measureable surface. Figure \ref{fig:schemMBR} shows a schematic outline of the filtration device and all components. The membrane sheet is positioned on the bottom of the filtration device [2]. \par
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{\columnwidth}
+    %\input{figs/MBR.pdf_tex}
+    \input{figs/MBRWithArrow.pdf_tex}
+ \caption{Schematic representation and dimensions of a potential experimental filtration device with inlet [1], membrane [2], membrane compartment [3] and outlet [4]. The arrow represents the movement of liquid from inlet to outlet and through the membrane. \label{fig:schemMBR}}
+ \label{fig:schemMBR}
+\end{figure}
+With the body of the filtration unit established, the effect of different in- and outlet structures was evaluated by means of \gls{CFD}. Although the flow in the membrane compartment should be laminar due to the chosen crossflow velocity, it is still possible for the inlet to have a turbulent regime. Hence, the turbulent \texttt{simpleFOAM} and \texttt{pimpleFOAM} solvers were used to obtain accurate results of the internal velocity and pressure fields. The latter were analysed for each design and the in- and outlet structures were modified with targeted adjustments in order to obtain a design that meets all the abovementioned design criteria. \\ \\
+The first inlet structure that was evaluated is a standard cylindrical hose with a diameter of \unit{2}{\centi\metre}. Figures \ref{fig:CADMBR-1} (a) and \ref{fig:CADMBR-1} (b), respectively, show the three-dimensional overview and the sideview for this geometry, while the fluid streamlines are depicted in Figure \ref{fig:CFD-1} (a). The streamlines represent the tangent of the velocity field in each point and describe the path of a massless fluid element in the velocity field.
+% deze laatste zin is van wikipedia maar ik vind hier geen andere bron van: https://en.m.wikipedia.org/wiki/Streamlines,_streaklines,_and_pathlines#Applications
+This figure clearly shows that such a configuration leads to a considerable recirculation along with the establishment of dead zones in the corners of the membrane compartment. Furthermore, the small cylindrical inlet induces turbulent swirling (which is not visible on figure \ref{fig:CFD-1} as it is a time dependent phenomenon). In order to avoid recirculation, stagnation and turbulent swirling, the transition from the inlet to the membrane compartment should be more gentle. Therefore, more gradual inlet and outlet geometries were considered. \par 
+\begin{figure}[]
+    \centerline{
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/cylboxOverviewClippedVec.pdf_tex}}
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		\input{figs/cylBoxSideClippedVec.pdf_tex}}
+    }
+      
+     \centerline{
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/WedgeShortOverviewClippedVec.pdf_tex}}
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/shortWedgeSideClippedVec.pdf_tex}}
+    }
+    \centerline{
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/WedgeSquareLastCirc.pdf_tex}}
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/WedgeSquareSmallSideClippedVec.pdf_tex}}
+    }
+    \centerline{
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/wedgeoverviewClippedVec.pdf_tex}}
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/wedgeSideClippedVec.pdf_tex}}
+    }
+    \centerline{
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/MBRFinalOverviewClippedVec.pdf_tex}}
+    \subfigure[]{\def\svgwidth{0.47\columnwidth}
+		 \input{figs/MBRFinalSideClippedVec.pdf_tex}}
+    }
+   
+    \caption{Tested laboratory scale filtration device geometries with \gls{CFD}: three-dimensional geometry (left), sideview (right) \label{fig:CADMBR-1}}
+\end{figure}   
+    
+% \begin{figure}[H]    
+%     \captcont{Evolution of the laboratory scale \gls{MBR} geometry (continued). Overview (left), sideview (right) \label{fig:CADMBR-2}}
+% \end{figure}
+
+\begin{figure}[]
+ \centerline{
+     \subfigure[]{ \includegraphics[width=0.65\textwidth]{figs/FixedCFD/cylbox.png}}
+ }
+ \centerline{
+     \subfigure[]{ \includegraphics[width=0.65\textwidth]{figs/FixedCFD/CFDshort.png}}
+ }
+\centerline{
+     \subfigure[]{ \includegraphics[width=0.65\textwidth]{figs/FixedCFD/lastcirc.png}}
+ }
+ \centerline{
+     \subfigure[]{ \includegraphics[width=0.65\textwidth]{figs/FixedCFD/wedgesmall.png}}
+ }
+\centerline{
+     \subfigure[]{ \includegraphics[width=0.65\textwidth]{figs/FixedCFD/FInal.png}}
+ }
+\caption{Velocity and streamlines in the different designs tested in Figure \ref{fig:CADMBR-1} (top view). The arrow indicates the inlet of the filtration device.}
+\label{fig:CFD-1}
+\end{figure}
+
+The next design had a funnel-shaped inlet/outlet structure (Figures \ref{fig:CADMBR-1} (c), (d)) and should result in a less aggressive entry of the feed flow. Figure \ref{fig:CFD-1} (b) indicates that this design has a flow pattern that is less chaotic, while turbulent swirling is absent. However, there is still a considerable recirculation of the fluid and presence of dead volumes. Hence, the feed flow still disturbs the overall fluid dynamics too much. \par
+In an attempt to get rid of the recirculation, the inlet length was doubled from 10 to \unit{20}{\centi\metre} (Figures \ref{fig:CADMBR-1} (e), (f)). Figure \ref{fig:CFD-1} (c) shows the streamlines for this configuration. Although there is a substantial improvement, it still does not meet the requirements set by the design criteria. By using an inlet with a rectangular cross section rather than a square, it is possible to obtain a flow profile without recirculation (Figures \ref{fig:CADMBR-1} (g), (h) and Figure \ref{fig:CFD-1} (d)), but these changes introduce two stagnant regions at the entrance of the membrane compartment. 
+Finally, a suitable design was obtained by introducing a bigger inlet and reducing the height of the membrane compartment so to obtain a flat configuration (Figures \ref{fig:CADMBR-1} (i), (j)). This configuration also has the advantage of being a lot easier to manufacture. Since this geometry generates a flow profile that fulfills all design criteria (Figure \ref{fig:CFD-1} (e)), it will be constructed and used for the experimental measurements. The technical drawings for this design are given in Appendix \ref{ch:tech}.
+
+% \begin{figure}[H]
+%  \captcont{CFD simulations of the \gls{MBR} designs proposed in Figure \ref{fig:CADMBR-1} (top view) (continued). The arrow denotes the inlet of the \gls{MBR}.}
+% \label{fig:CFD-2}
+% \end{figure}
+
+\section[Case studies]{Filtration model: case studies \label{sec:casestud}}
+\subsection{Setup \label{sec:setup}}
+In order to investigate the impact of the model extensions and to verify if the filter cake build-up occurs in a realistic way, a tubular membrane was chosen as subject of a scenario analysis. This geometry has the advantage of being symmetrical, it gives rise to a parabolic flow profile and enables the possibility of simulating a long length. Therefore, the tubular geometry was selected instead of the optimal geometry according to the results reported in Section \ref{sec:calVal}. The tubular membrane had an inner diameter of 8\,mm and a length of 60\,cm. The feed was introduced at the channel inlet and a constant flux was instituted through the porous wall (membrane). A crossflow velocity and flux of respectively \unit{0.04}{\metre\, \reciprocal\second} and 36\,LMH ($1 \times 10^{-5}$\,\unit{\metre\,\reciprocal\second}) were chosen as benchmark values. The \gls{PSD} of the feed flow was experimentally determined with a particle size analyser (DIPA 2000) on a sample of \gls{MBR} sludge from municipal wastewater (Figure \ref{fig:PSDplot}) and the number average diameter, \unit{40.82}{\micro\metre}, was used as benchmark particle size for monodisperse simulations. \cite{Ghijs2014} demonstrated that high values of $k$ result in a slow filter cake formation while low values induce an increased piling of the particles. Therefore, $k = 2$ results in a good trade-off between the rate of filter cake formation and the roughness of the cake. The other benchmark parameters are summarised in Table \ref{tab:benchmark}. \par
+\begin{figure}[H]
+\centering
+ \includegraphics[width=1\textwidth]{figs/PSDPlot.png}
+ \caption{Experimentally determined particle size distribution of a sample of \gls{MBR} sludge from municipal wastewater, obtained with a particle size analyser (DIPA 2000). \label{fig:PSDplot}}
+\end{figure}
+\begin{table}[H]
+\centering
+    \caption{Benchmark parameter values used in the filtration model\label{tab:benchmark}.}
+    \begin{tabular}{lll}
+      \toprule
+      Parameter &  & Value \\
+      \midrule
+      \gls{Ucf}  & crossflow velocity &  \unit{0.04}{\metre\,\reciprocal\second}\\ 
+      \gls{J}  & flux &  36\,LMH\\ 
+      \gls{rhoS}  & density of the suspended solids &  \unit{1.003}{\kilogram\,\rpcubic\metre}\\ 
+      \gls{rhof}  & density of the continuous phase &  \unit{1.000}{\kilogram\,\rpcubic\metre}\\ 
+      \gls{fluidKin} & kinematic viscosity of the continuous phase  &  \unit{1.004}{\metre\squared\,\reciprocal\second}\\ 
+      \gls{k}  & adhesion parameter &  \unit{2}{\second\,\reciprocal\metre} \\ 
+      \gls{partDia}  & number average particle diameter &  $40.82 \times 10^{-6}$ \unit{}{\metre}\\ 
+      \gls{cb}  & concentration of suspended solids &  \unit{10}{\kilogram\,\metre\rpcubed}\\ 
+      \bottomrule
+    \end{tabular}
+  \label{tab:multicol}
+\end{table}
+%Due to %computational constraints and the 
+Due to the symmetry of the tubular membrane, it can be represented as a cuboid with a thickness of 0.6\,mm (Figure \ref{fig:tube}). Such a representation does not take into account the effects of the curvature. However, this effect is assumed negligible as the height of the cuboid is only 2\,\% of the cylinder circumference and the fluid dynamics are consequently computed in two dimensions. \par 
+In order to simulate the flow fields in OpenFOAM, a mesh was generated with a resolution of 0.6\,cm in the $x$-direction and 0.04\,mm in the $y$-direction, resulting in a $300 \times 100$ mesh with $30,000$ cells. Next, the boundary faces were defined on the mesh and the boundary conditions were imposed. The inlet and membrane face were defined as the \texttt{patch}-type which is able to account for a flux. Dirichlet boundary conditions were imposed of \unit{0.04}{\metre\,\reciprocal\second} for the $x$-velocity at the inlet, $1 \times 10^{-5}$\,\unit{\metre\,\reciprocal\second} for the $y$-velocity at the membrane and \unit{0}{\metre\,\reciprocal\second} for all other directions, assuming zero slip at the walls. For the pressure, Neumann zero gradient boundary conditions were set at the inlet, membrane, and symmetry plane. The outlet was also defined as the \texttt{patch}-type with a zero gradient Neumann boundary condition for the velocity and a Dirichlet boundary condition of atmospheric pressure, assuming free outflow. The inside face was defined as a \texttt{symmetryPlane}-boundary implying a periodic boundary condition for the velocity, while the front and back faces are set to \texttt{empty} to indicate a two dimensions simulation. The Reynolds number for these conditions is 320, which is well within the laminar region. \par
+The steady-state solution for this flow problem was obtained via the \texttt{simpleFoam} solver which is primarly used for turbulent, incompressible Newtonian flow but is also valid under laminar conditions.
+% \todo{WN: Wouter bedoel je niet slice. BDJ: is cuboid niet professioneler?}
+
+\begin{figure}[H]
+\centering
+ \def\svgwidth{0.8\columnwidth}
+ \input{figs/tubularMembrane.pdf_tex}
+ \caption{Three-dimensional representation of the modelled system, boundary faces and their respective fluxes, denoted by the arrows. The boundary faces consist of inlet [1], outlet [2], membrane [3], inside [4], front and back [5]. \label{fig:tube}}
+\end{figure}
+
+
+The steady-state solution for the relative kinematic pressure $\psi$ [\unit{\metre\squared\,\second\rpsquared}], $x$-velocity and $y$-velocity is displayed in Figure \ref{fig:CFDTube}.
+% pressure calculated from p_open relates to p_real through p_real = p_open*rho + 101325
+The absolute pressure shows a linear decrease from $101,371$\,Pa to atmospheric pressure, $101,325$\,Pa. Concerning the fluid velocity, a transition from the uniform profile at the inlet to a parabolic profile is observed. Due to the zero-slip boundary condition at the membrane, the fluid is moving slower near the walls and the incoming fluid is forced towards the middle section. After this transition, the $x$-velocity exhibits a fully developed parabolic flow and the $y$-velocity remains quasi constant at $-1 \times 10^{-5}$ \unit{}{\metre\,\reciprocal\second}. In order to facilitate the interpretation of the results, all simulations performed in the remainder of this chapter are based on the fully developed middle section of the tubular membrane (30\,cm). The involvement of inlet phenomena will only complicate the interpretation and are removed from the equation. Lastly, it is important to note that all simulations employ the benchmark parameter values as given in Table \ref{tab:benchmark}, unless indicated otherwise.
+\begin{figure}[H]
+    \centerline{
+    \subfigure[]{\includegraphics[width=1\textwidth]{figs/pressuretubeAdapt.png}}
+    }
+    \centerline{
+    \subfigure[]{\includegraphics[width=0.5\textwidth]{figs/xvelotubeAdapt.png}}
+    \subfigure[]{\includegraphics[width=0.5\textwidth]{figs/yvelotubeAdapt.png}}
+    }
+\caption{(a) Relative kinematic pressure field in the slice of the tubular membrane (\unit{60}{\centi\metre}). (b) $x$-velocity in the first 2.5\,cm of the modelled system. (c) $y$-velocity in the first 2.5\,cm of the modelled system. \label{fig:CFDTube}}
+\end{figure}
+% \todo[inline]{JB: eigenlijk zou je hier de distance to the inlet in de figuur moeten weergeven}
+\subsection{Mesh independence of the continuous phase \label{sec:MeshIndep}}
+The mesh size is a critical factor that defines the accuracy of the \gls{CFD} simulations. In order to achieve accurate results, the mesh size should be sufficiently fine. However, the accuracy increases asymptotically and there is a refinement level beyond which there is no further significant effect of the mesh size. At that level, mesh independency is attained \citep{Roache1997}, which is to be pursued. \par
+To determine the independency of the mesh, three meshes of different sizes were constructed; Mesh A had a cell size of \unit{20}{\milli\metre} by \unit{40}{\micro\metre}, mesh B a cell size of \unit{60}{\milli\metre} by \unit{200}{\micro\metre} and mesh C a cell size of \unit{60}{\milli\metre} by \unit{400}{\micro\metre}. These meshes were expected to cover a good range in order to indicate mesh independency. The $x$- and $y$-velocity were subsequently analysed for several cross sections along the length of the tube. The velocity profiles at $x$ = \unit{15}{\centi\metre} are shown in Figure \ref{fig:xmeshindep}. \par
+It can be seen that the velocity profiles of mesh A and B are close to identical whereas a considerable difference is noticeable for mesh C. As a result, one can conclude that mesh A attains great accuracy, but is too fine and hence computationally inefficient, while mesh C is too coarse, giving rise to inaccurate results. Therefore, mesh B provides the best trade-off between accuracy and speed and is the ideal mesh size for the geometry at hand. Figure \ref{fig:xmeshindep}  also indicates that the discrepancies increase with the velocity magnitude, making it possible to use a coarser mesh in low velocity regions. However, due to the imposed flux at the membrane, the regions with a low $x$-velocity are also the regions with a high $y$-velocity. Hence, a non-uniform mesh should be a fine mesh near the membrane, a coarser mesh in the middle and finer mesh at the center of the tube. Due to the simple geometry and the fast convergence for mesh B, this non-uniform meshing strategy is considered as too complex for a minor efficiency gain, and was therefore not implemented. 
+\begin{figure}[H]
+\centerline{
+    \subfigure[]{ \includegraphics[width=0.6\textwidth]{figs/meshIndepX.png}}
+    }
+\centerline{
+    \subfigure[]{\includegraphics[width=0.6\textwidth]{figs/meshIndepY.png}}
+    }
+ \caption{Velocity profile of the velocities in $x$-direction (a) and $y$-direction (b) at $x$ = \unit{15}{\centi\metre} from the inlet for three meshgrids. Mesh A with a cell size of  \unit{20}{\milli\metre} by \unit{40}{\micro\metre}, mesh B with a cell size of \unit{60}{\milli\metre} by \unit{200}{\micro\metre} and mesh C with a cell size of \unit{60}{\milli\metre} by \unit{400}{\micro\metre}. \label{fig:xmeshindep}\label{fig:ymeshindep}}
+\end{figure}
+%
+% particle groote 100µm checken
+% mesh1000-200: \textit{tubular1LMH4cms1000-200mesh20cmExtractionFromMiddle.csv} \\
+% mesh300-200: \textit{tubular1LMH4cms300-100mesh20cmExtraction0.csv}\\
+% mesh300-20: \textit{tubular1LMH4cms300-20mesh20cmExtractionFromMiddle.csv}\\
+% mesh300-10: \\ % shear- and gradient induced lift forces
+
+\subsection{The {Segr\'e}-Silberberg effect: a qualitative validation \label{sec:QualVal}}
+Rigid spheres flowing in tubular channels under laminar conditions are subjected to a radial migration due to shear gradient and inertia-induced lift forces. This effect is called the Segr\'e-Silberberg effect and was experimentally observed by \cite{Segre1961}. Following the work of \cite{Segre1961}, \cite{Matas2004} formulated a theoretical underpinning for this effect, which can be summarised as follows; \par
+Neutrally buoyant particles, which are assumed to move at the speed of the surrounding fluid, are subjected to a lift force away from the channel's center axis when flowing in a channel due to the curvature of the Poiseuille flow . This force is counteracted by wall repulsion effects due to the asymmetric wake of the particles near the wall, inducing a lift force in the opposite direction \citep{Zeng2005}. For low Reynolds numbers, an equilibrium position is reached at approximately 60 \% of the distance from the center axis to the wall.\par
+Non-neutrally buoyant particles, which are assumed to lead or lag %\todo{WN: weet je al waar dit van afhangt? BDJ Nope } 
+the surrounding fluid velocity, are additionally affected by the Saffman lift force, Eq.\ \eqref{eq:lift3D}, and the equilibrium position is not fixed but depends on the size of the channel, the Reynolds number (Eq.\ \eqref{eq:Reynolds}) and the particle Reynolds number \gls{Rep}:	 
+\begin{equation}
+ Re_p = \cfrac{\mathbf{U}_\mathrm{m}\, \gls{partDia}}{\gls{fluidKin}\, D_\mathrm{h}} \, ,
+ \label{eq:PartRe}
+\end{equation}
+with \gls{Um} [\unit{\metre\,\reciprocal\second}] the maximal channel velocity and \gls{Dh} [\unit{\metre}] the hydraulic diameter \citep{Segre1961,Matas2004}. \\ \\
+High Reynolds numbers indicate a flow regime that is governed by inertial forces. Saffman's lift force is one of these forces, so it is not suprising that high Reynolds flows result in a more pronounced radial migration %\todo{weet je ook welke richting: naar ax of naar wall? BDJ: een artikel zegt als ze leaden dan ist naar beneden} 
+of dispersed particles. The same reasoning is valid for the particle Reynolds number \citep{DiCarlo2007}.  \par
+The theoretically and experimentally acknowledged Segr\'e-Silberberg effect provides an ideal opportunity for a qualitative validation of the force balance. By means of a series of in silico experiments, an attempt was made to replicate this effect and study its dependency on both Reynolds numbers. As a full analysis of the effect of all variables in Eq.\ \eqref{eq:Reynolds} and \eqref{eq:PartRe} is not feasable within the context of this master thesis, only the effect of the particle diameter \gls{partDia} and the crossflow velocity \gls{Ucf} was investigated. It should be noted that the particle diameter only affects \gls{Rep} while the crossflow velocity impacts both \gls{Re} and \gls{Rep} (Eqs.\ \eqref{eq:Reynolds} and \eqref{eq:PartRe}).
+
+% effect of Re \\
+% effect of dp \\
+% preferential concentration \\
+% 
+% 50:10:100µm particles for 1LMH and zero 1LMH 10cms 0.5 MLSS \textit{1LMHFilterTorus10cmsMLSS05.h5}
+% 100µm particles for 1 LMH and zero LMH 4cms 10 MLSS
+% F
+% 1000*200 lijst de goeie mesh te zijn
+% simulaties:
+% \textbf{effect of Re}
+%  \begin{itemize}
+%  \item 1000*200 4cms 1LMH: \textit{particleTracerExperiment4cms1LMH-1000-200mesh.h5}
+%  \item 1000*200 1cms 1LMH: \textbf{Bezig}
+%  \item 1000*200 10cms 1LMH: \textit{particleTracerExperiment10cms1LMH-1000-200mesh.h5}
+% \end{itemize}
+% \textbf{effect of flux}
+% 4cms:
+% \begin{itemize}
+%  \item 1 LMH 1000-200: \textit{particleTracerExperiment4cms1LMH-1000-200mesh.h5}
+%  \item 0 LMH
+%  \item 2 LMH
+% \end{itemize}
+% 
+% \begin{itemize}
+%  \item wss 10cms stromingen nemen
+% \end{itemize}
+% \textbf{effect of dp}
+% komt uit de rest van de simulaties
+% wss nemen we die bij 10cms
+
+\subsubsection{Setup}
+For this validation, the tubular setup was used from Section \ref{sec:setup}. No flux was imposed at the membrane and an infinitely long tube was simulated by employing periodic boundary conditions at the inlet and outlet of the modelled system (Figure \ref{fig:tube}). Figure \ref{fig:CFDTube} demonstrates that this periodic boundary condition does not impose a problem for the $x$- and $y$-velocity as they are constant with respect to the $x$-direction in the fully developed middle section of the tubular membrane (30\,cm). The same conclusion is valid for the pressure, even though it is not constant, because only the gradient is considered by the force balance, which is also constant with respect to $x$. For the initial condition, particles were inserted at fixed points at the inlet and their $y$-position is followed in time.
+\subsubsection{Effect of the particle diameter \label{sec:effectOfDiameter}}
+First, the effect of the particle diameter is investigated. Particles of \unit{25}{\micro\metre}, \unit{70}{\micro\metre} and \unit{100}{\micro\metre} were introduced at the inlet, every \unit{0.5}{\milli\metre} and their lateral position was tracked for \unit{120}{\second}. The results of this simulation are displayed in Figure \ref{fig:effect} (a). \par 
+
+It is clear that there is a clear correlation between the particle size and the radial migration in the high-shear regions of the channel, i.e.\ close to the membrane. This non-linear effect can directly be accounted to the inertial lift force  (Eq.\ \eqref{eq:lift3D}), which is quadratic with respect to \gls{partDia}. The smallest particles (\unit{25}{\micro\metre}) are almost unaffected by the radial migration. \par
+As mentioned previously, the particles should theoretically reach an equilibrium position between the membrane and the center axis of the tube. This equilibrium position is not observed in Figure \ref{fig:effect}, but this is further discussed in Section \ref{sec:discValidation}.
+% Lastly, it is interesting to note that the \unit{40}{\micro\metre} particles, under these conditions, are almost moving straight.
+
+\subsubsection{Effect of the crossflow velocity}
+Next, the effect of the crossflow velocity is examined. The setup was identical to the previous scenario but only one particle diameter i.e.\ \unit{70}{\micro\metre} was explored. Figure \ref{fig:effect} (b) depicts the results of this scenario. It can be seen that higher crossflow velocities bring forth an increased radial migration, just as predicted by \cite{Matas2004}. This effect demonstrates that particles are more likely to reach the membrane at high crossflow velocities. This observation is interesting as it is generally accepted that such conditions give rise to less filter cake formation by an increased detachment. This exemplifies the complexity of this process and indicates the need for an accurate calibration of the adhesion parameter $k$. In the long run, it would be meaningful to implement a more mechanistic approach like a force balance on filter cake particles (Section \ref{sec:discFilter}).
+
+\subsubsection{Effect of the flux}
+Since the effect of a radial flux is not included in the Segr\'e-Silberberg effect, it should be investigated how this affects the previous described balance of forces. To investigate this, the particle streamlines were evaluated for a flux of 0\,LMH, 36\,LMH and 72\,LMH, the last two are typical values for membrane filtration. The results of this in silico experiment are presented in Figure \ref{fig:effect} (c). It can be seen that the flux is the most important factor impacting  the radial migration of suspended solids. When applying a flux, smaller particles which are less influenced by the radial migration effects, are also transported towards the membrane surface. Under these conditions the non-existence of an equilibrium position seems to be justified.
+\begin{figure}[H]
+ \centerline{
+ \subfigure[]{\includegraphics[width=0.9\textwidth]{figs/effectOfDiameter.png}}
+ }
+ \centerline{
+ \subfigure[]{\includegraphics[width=0.9\textwidth]{figs/effectOfCFV.png}}
+ }
+ \centerline{
+ \subfigure[]{\includegraphics[width=0.9\textwidth]{figs/effectOfFlux.png}}
+ }
+ \caption{Effect of the particle diameter (a), crossflow velocity (b) and transmembrane flux on the radial migration of particles in a microchannel.} \label{fig:effect} 
+\end{figure}
+
+\subsection{Mesh independency of the agent-based model} %onstabiel evenwichts probleem
+Checking the mesh independence is good modelling practice for \gls{CFD} and since the Lagrangian modelling framework relies on the pressure and velocity field generated by \gls{CFD}, it seems only logical to perform a mesh independency check on the \gls{ABM} as well. This might provide information about the sensitivity towards variations in the flow field. The particle streamlines are simulated for the same mesh sizes as the mesh independency in Section \ref{sec:MeshIndep}.\par  %, the setup remains the same as it seems to be a straightforward and correct approach for this qualitative assessment. \par
+From Figure \ref{fig:effectOfMesh} it is clear that the movement of the particles shows the same sensitivity towards the mesh size as the velocity profiles, which is expected as some forces are directly proportional to the velocity. The regions with the largest deviation of the streamlines are related to the regions with the largest deviation of the velocity profile, i.e.\ at high $x$-velocities. For particles introduced near the center axis of the tube, the radial lift force is almost zero and, hence, these are in an unstable equilibrium position. Therefore, the particle tracers at $y =$ \unit{3.9}{\milli\metre} are not significantly impacted by the mesh size. 
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=1\textwidth]{figs/effectOfMesh.png}
+ \caption{Effect of the mesh size on the particle streamlines in a tubular membrane filter. \label{fig:effectOfMesh}}
+\end{figure}
+
+\subsection{Spatial segregation of the suspended particles \label{sec:spatSeg}}
+The dependency of the radial migration velocity on the particle size, demonstrated in Section \ref{sec:effectOfDiameter}, should lead to the segregation of deposited particles along the longitudinal axis of the membrane. This effect will be most noticeable for an adhesion probability of 100\%, as it eliminates the stochasticity of the filter cake formation. Hence, perfect stickiness of the particles was assumed for this simulation, to demonstrate the segregation. Particles were introduced in the lower \unit{1}{\milli\metre} of the inlet and the deposition position of the particles was tracked. A normalisation of the number of deposited particles at each bin with respect to the total number of deposited particles gives rise to a histogram as depicted in Figure \ref{fig:depProb}. A flux and crossflow velocity of respectively 144\,LMH and \unit{10}{\centi\metre\,\reciprocal\second} were employed and the dispersed phase consisted of number-wise equally represented particle sizes of 40, 70 and \unit{100}{\micro\metre}. It was chosen to only consider the lower \unit{\milli\metre} in order for all entering particles to deposit within a reasonable time frame. The same reasoning can be used to motivate the choice of a higher flux and crossflow velocity as it brings forth a faster radial migration. %Moreover, considering the entire \unit{4}{mm} will only result in an elongated histogram, though the main observations would probably be very similar. 
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=1\textwidth]{figs/depProb.png}
+ \caption{Relative frequency of the number of deposited particles in function of the distance to the inlet for particles of 40, 70 and \unit{100}{\micro\metre}. \label{fig:depProb}}
+\end{figure}
+% \todo[inline]{misschien eens kijken om dit te vervangen door 3 afzonderlijke histogrammen}
+% \todo[inline]{make transparant}
+Figure \ref{fig:depProb} shows that there is indeed a longitudal segregation of the suspended solids. The largest particles deposit closer to the inlet than the smaller particles. There is a clear cut-off distance for each particle size which is the deposition position of the particles that are introduced at the top of the inlet. As a consequence, all particles deposit within this distance. It is also clearly visible that the number of depositions decreases with the distance, which can be explained by the fact that, close to the membrane, a small difference in inlet position induces only a small difference in the particle trajectory due to the low velocity of the continuous phase. For higher fluid velocities closer to the middle of the tube a small change in the entry position results in a big difference in the trajectory.\par
+It should be kept in mind that an adhesion probability of 100\% is not realistic but the purpose of this experiment was to characterise the movement of the suspended particles and not the simulation of a realistic filter cake build up.
+%with P=1; the position of particles is \textbf{eenduidig bepaalt, voor hogere k's treedt een ``smearing'' effect op en wordt de positie minder eenduidig bepaalt waardoor grotere 6partikels ook veel verder gaan}
+% mesh1000-200: \textit{particleTracerExperiment4cms1LMH-1000-200mesh.h5}
+\subsection{Effect of polydispersity \label{sec:multidispresult}}
+In order to assess the effect of polydispersity, a comparison was made between the filter cake of a mono- and polydisperse bulk phase. This is also the ideal opportunity to perform a full-fledged simulation with filter cake formation to identify the model imperfections. \par 
+The polydisperse simulation used an experimentally determined \gls{PSD} of \gls{MBR} sludge (Figure \ref{fig:PSDplot}) and the monodisperse simulation used the number average particle size of this distribution, which was \unit{40.82}{\micro\metre}.  The filter cake formation was simulated for \unit{15}{\second} and each scenario was run four times in order to assess the stochastic nature of the model, which is depicted as a band (average, minimum and maximum) in Figure \ref{fig:monoVsMulti}. 
+The average filter cake thickness in time is presented in Figure \ref{fig:monoVsMulti} (a) and shows that polydispersity gives rise to a faster filter cake build up. Section \ref{sec:spatSeg} demonstrates the fast deposition of big particles and, in a polydisperse setting, these will ``catch'' smaller particles giving rise to a fast filter cake development. This synergistic effect is not present in a monodisperse setting and the filter cake is thereby formed at a slower pace. The evolution of the filter cake porosity is shown in Figure \ref{fig:monoVsMulti} (b). Initially, there is no filter cake and the porosity is equal to one, and due to the formation of filter cake patches the porosity starts decreasing at a higher rate in the polydisperse setting. This could, however, be due to a denser filter cake or a higher surface coverage, which cannot be determined from the figure. For this, the porosity of the actual filter cake patches has to be evaluated (Figure \ref{fig:monoVsMulti} (c)). It can be seen that the filter cake in the polydisperse setting is more densily packed than in the monodisperse case. As mentioned previously, polydispersity should theoretically lead to a denser packing of the particles in the filter cake. Hence, the simulation results are in agreement with the literature \citep{Desmond2013,partPack2}. \par
+However, these simulation results still have their imperfections. Figure \ref{fig:sideViewCake} shows a two-dimensional projection of the centers of the deposited particles after \unit{2}{\minute} of simulation (the monodisperse case). Note the unrealistic architecture of the filter cake, embodied by the formation of narrow filter cake piles. This observation is confirmed by the longitudal variance of the filter cake thickness, presented in Figure \ref{fig:monoVsMulti} (d). Hence, it can be concluded that the problem of particles piling up was not resolved by transitioning to a three-dimensional model.    
+
+\begin{figure}[H]
+\centerline{
+    \subfigure[]{\includegraphics[width=0.44\textwidth]{figs/aveThick.png}}
+    \subfigure[]{\includegraphics[width=0.44\textwidth]{figs/por.png}}
+    }
+\centerline{
+    \subfigure[]{\includegraphics[width=0.44\textwidth]{figs/patchpor.png}}
+    %\subfigure[]{\includegraphics[width=0.47\textwidth]{figs/maxThick.png}}
+    \subfigure[]{\includegraphics[width=0.44\textwidth]{figs/varHeight.png}}
+    }
+    \caption{Evolution of the simulated filter cake characteristics in time. (a) Average filter cake thickness, (b) global filter cake porosity, (c) actual filter cake porosity, (d) longitudinal variance of the filter cake thickness.   \label{fig:monoVsMulti}}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figs/sideViewCake.png}
+\caption{Two dimensional projection of the filter cake after \unit{2}{\minute}. The dots represent particle centers and are not to scale with the particle size. \label{fig:sideViewCake}}
+\end{figure}
+
+% \begin{itemize}
+%  \item k = 2
+%  \item t = 15s
+%  \item writeout = 0.01s
+%  \item inlet velocity = 10 cm/s
+%  \item Re = 800
+%  \item LMH = 1
+%  \item 6*e-04 breed
+%  \item 1g/L
+% \end{itemize}
+% Mono: 1LMH10cms1gl15sk2-monodisp.h5
+% Multi: 1LMH10cms1gl15sk2.h5
+% number weighted average of the PSD is 40.82 µm
+% \subsection{particle distance-distance}
+
+% \subsection{comparison tubular membrane vs our MBR for the same loading rate}
+% \todo[inline]{addition: misschien nog een stukje over the considerations die gemaakt zijn over de grote van de het computationele domein, te grote was is veel te zwaar maar bij kleiner domein is het wel realistisch? -> Ja, want de particles die in het bovenste binnenkomen zullen gedurende de verblijftijd toch niet neerzetten op het membraan ze hebben geen tijd genoeg.}
+% 
+% \subsection{2D vs 3D}
+% \todo[inline]{addition: interpolation of the CFD simulations}
+
+% For the experimental set-up a few designs for the membrane filtration unit where evaluated using openFOAM platform for CFD.
+% 
+% \begin{itemize}
+% \item pipe-box-pipe box: 4cm 10cm 30cm 
+% MBRPipe
+% \item funnel-box-funnel, funnel: 0.4cm 1cm 20cm rectangle is in center, box dimensions: 4cm 10cm 30cm
+% MBRHoekigeMesh
+% \item funnel-box-funnel, funnel: 0.4cm 1cm 20cm inlet  rectangle is inline with bottom, box dimensions: 4cm 10cm 30cm
+% MBRWedge
+% \item funnel-box-funnel, funnel: 0.4cm 1cm 20cm inlet  rectangle is inline with bottom outlet is inline with top, box dimensions: 4cm 10cm 30cm
+% MBRReverseWedge
+% \item funnel-box-funnel, funnel: 0.3cm 1cm 20cm inlet  rectangle is inline with bottom, box dimensions: 3cm 10cm 30cm
+% \item funnel-box-funnel, funnel: 1.5cm 1.5cm 20cm inlet SQUARE is inline with bottom, box dimensions: 3cm 10cm 30cm
+% MBRWedgeSquare
+% \item funnel-box-funnel, funnel: 2.7cm 2.7cm 20cm inlet SQUARE is inline with bottom, box dimensions: 2.7cm 10cm 30cm
+% MBRWedgeBigSquare
+% \item funnel-box-funnel, funnel: 2cm 2cm 20cm inlet SQUARE is inline with bottom, box dimensions: 2cm 10cm 30cm
+% MBRWedgeMediumSquare
+% \end{itemize}
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}

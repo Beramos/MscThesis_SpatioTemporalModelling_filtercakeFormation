@@ -1,0 +1,209 @@
+\hyphenation{}
+\chapter[General discussion and perspectives]%
+{General discussion and perspectives\label{ch:disc}}
+
+Despite of the accomplished progress, the model still has a few shortcomings and it is important to address these. Besides, looking forward, guidelines and remarks are provided for future improvements. In the final part of this chapter, different sources of numerical instability are mapped out and a brief discussion on the suitability of different profilometric techniques for the specific task of characterising the filter cake is given.
+\section{Remarks on the bulk phase force balance \label{sec:discValidation}}
+In Chapter 5, a qualitative validation is performed of the force balance in the model. The results were mostly in agreement with the theoretical description of \cite{Matas2004} and the experimental observations of \cite{segre1962} and \cite{DiCarlo2007}. Still, the absence of an equilibrium position raises questions about the integrity of the force balance (Eq.\ \eqref{maxeyRiley}). The reason for this apparent shortcoming should be sought in the forces that are able to counteract the radial migration of particles. \cite{Zeng2005} indicate that the presence of a nearby wall breaks the axisymmetry of the wake vorticity distribution as well as a tortuosity change, inducing a lift force that moves the particles away from the wall. This mechanism is not explicitly included in the force balance but might be accounted for under the guise of the Fax\'en correction:
+\begin{equation}
+ \mathbf{U}_\mathrm{r,eff} = \mathbf{U}_\mathrm{r} - \frac{1}{24}d_\mathrm{p}^2 \nabla^2 \mathbf{U}_\mathrm{c} \, ,
+ \label{eq:faxen}
+\end{equation}
+with \gls{Ueff} [\unit{\metre\,\reciprocal\second}] the Fax\'en corrected relative velocity and $\mathbf{U}_\mathrm{r}$ the actual relative velocity of the particles.
+In two dimensions, the Laplacian of Eq.\ \eqref{eq:faxen} can be written as,
+\begin{equation}
+ \nabla^2 \mathbf{U}_\mathrm{c}= \cfrac{\delta^2 \mathbf{U}_\mathrm{c}}{\delta x^2}+\cfrac{\delta^2 \mathbf{U}_\mathrm{c}}{\delta y^2} \, .
+\end{equation}
+A fully developed Poiseuille (parabolic) flow is assumed in the tube. For this flow regime, the second derivative of $\mathbf{U}_\mathrm{c}$ with respect to $y$ is constant along the width of the tube. Hence,
+\begin{equation}
+ \cfrac{\delta^2 \mathbf{U}_\mathrm{c}}{\delta y^2} = \mathrm{c} \, .
+\end{equation}
+Furthermore, $\mathbf{U}_\mathrm{c}$ is constant with respect to $x$ under these conditions, so
+\begin{equation}
+ \cfrac{\delta^2 \mathbf{U}_\mathrm{c}}{\delta x^2} = 0 \, .
+\end{equation}
+Therefore,
+\begin{equation}
+\frac{1}{24}d_p^2 \nabla^2 \mathbf{U}_\mathrm{c} = \mathrm{c} \, ,
+\end{equation}
+and this shows that the Fax\'en correction is constant for a Poiseuille flow and is clearly not the wall repulsion effect described by \cite{Zeng2005}, which reaches a maximum magnitude near the walls. \par
+In order to increase the accuracy of the force balance, it might be interesting to investigate the addition of the wall-induced lift force as it seems to have a considerable impact on the flow of particles. Furthermore, next to Saffman's lift force, two additional lift forces are described in \cite{Matas2004}; the shear gradient-induced lift force due to the curvature of the velocity profile and the Magnus effect due to the forced rotation of the particles. It is likely that the Magnus effect is negligible compared to the inertial lift force, but the shear gradient-induced lift force might be of the same order of magnitude, and should therefore be investigated. \par
+Due to the uncertainty of the magnitude of these forces and the complex nature of their interaction with other operational variables, it is meaningful to first validate the model in order to assess the necessity of an extension of the force balance.
+%onsider a point ($x_\mathrm{1}$, $y_\mathrm{1}$) near the wall of the tube, where the magnitude of the opposing lift force should reach its maximum value.
+
+%\section{Particle rolling}
+
+\section{Filter cake formation \label{sec:discFilter}}
+The simulation results in Section \ref{sec:multidispresult} indicate the formation of filter cake towers, in spite of the extension of the model to three dimensions. In order to resolve this unrealistic behavior, a rolling algorithm should be included in the model. This will assure that only particles that reach a stable position will attach to the filter cake. As mentioned previously, such a framework is described in \cite{Smets} and should be assigned a high priority in the further development of the model as it is imperative for the simulation of realistic filter cake structures. \par
+Next to the packing of particles, it is meaningful to reflect on the adhesion probability equation (Eq.\ \eqref{eq:stickychance}). Although this equation serves its purpose of constraining the filter cake formation to low shear regions quite well, several arguments indicate the necessity for the revision of this equation.
+Firstly, due to the stochastic nature of the model, there is always a chance that particles adhere in high shear regions, and currently these particles remain attached indefinitely. Secondly, the simulations indicate a positive correlation of the radial migration magnitude and the particle size, resulting in an easier filter cake formation for bigger particles. This contradicts the experimental observations in \cite{Li1998}. %\todo{nog eens twee PSDs met elkaar vergelijken}. 
+Hence, it seems that Eq.\ \eqref{eq:stickychance} is not able to accurately simulate the balance between adhesion and detachment of particles to the membrane or filter cake, which is a complex interplay between particle-particle interactions (attachment to  the filter cake), particle-interface interactions (attachment to the membrane) and the liquid flow (shear at the membrane, compression due to \gls{TMP}, etc.). A theoretical foundation for particle-particle and particle-interface interactions in dispersions is provided by the \gls{DLVO} theory, which determines the balance between the electrostatic repulsion and the van der Waals attraction \citep{Lyklema1968}. However, the \gls{DLVO} theory does not comprise all the necessary processes for a complete representation of the interactions. The agglomeration of particles is also influenced by hydration forces, steric forces and hydrophobic interactions \citep{VanOss1989,Hermansson1999}. Finally, the hydrodynamics and pressure-driven effects should also be accounted for as it is hypothesised that these effects greatly influence the formation of the filter cake. It can be concluded that Eq.\ \eqref{eq:stickychance} is too simple for an accurate representation of filter cake formation and it is clear why it does not yield satisfactory filter cake structures. Moreover, a mechanistic approach in the form of a force balance over the particles in the filter cake is imperative in order to simulate and comprehend backwashing and aeration processes.
+%Next to the rolling of particles, the absence of a mechanism for filter cake detachment might also be the cause. To be able to account for processes, such as backwashing and aeration this mechanism should be in the model.\par %The increased radial migration is in agreement with the literature and based on elimination the lacking mechanisms seems to be filter cake detachment. 
+% In order to maintain the mechanistic modelling mindset, it would be meaningful to take a look at mechanistic approaches to replace the adhesion probability equation. This could be in the form of a force balance, similar to the force balance in the bulk phase, taking into account \textbf{inter-particle} interactions, the drag force of the liquid, friction with the membrane and .... . %(Inspiration could be found from biofouling models, but mostly these use simple detachment rules, which are valid for the bottom up formation of filter cake as a result of microbial growth, but not for our case.)
+
+\section{Coupling ABM and continuous model}
+%The Lagrangian model of the dispersed phase and the Eulerian model of the continuous phase, the flow fields are used to model the movement of the suspended solids and the filter cake build up but 
+As mentioned in Chapter \ref{spatModel}, the two model layers are coupled unidirectionally. The steady-state flow profile of the continuous phase is calculated once at the beginning of the simulation and is used throughout the whole simulation. Hence, the formation of the filter cake has no impact on the continuous phase and the permeate keeps flowing unperturbed, regardless of the fouling severity, which is not at all realistic. %In a constant pressure membrane filter, a pump employs a pressure differential over the membrane and induces a permeate flux through its pores. Particles accumulate on the membrane surface and a filter cake is gradually formed, increasing the filtration resistance and decreasing the flux. 
+Two effects can be identified that demonstrate the impact of filter cake on the surrounding fluid. \par
+The first is the effect of the filter cake by increasing the filtration resistance. An increase in filtration resistance due the presence of a porous filter cake in a certain region will make the fluid move towards cleaner regions, which implies the spatial variation of the flux. %This process can be incorporated by developing a \gls{RIS} model. \par
+%that evaluates the Kozeny-Carman equation in order to determine the flux through each cell of the membrane face. This information needs to be transferred to OpenFOAM where a new flow pattern is established. So in order to construct a realistic filter cake formation model, the coupling of the model layers should be bidirectional. \par   %Three potential approaches can be used to achieve this and are elaborated below. \par
+Additionally, the presence of a filter cake has an effect on the velocity of the surrounding fluid. Here, it is not the flux that is affected, but rather the general flow profile.    %, the presence of a thick filter cake at the walls of the \gls{MBR} will have an impact on the fluid velocity. 
+Both effects are currently not included in the model but with for a realistic filter cake formation model, at least the increasing filtration resistance should be considered.%, this can be accomplished in several ways. 
+\par
+To model this, a \gls{RIS} approach can be applied with two resistance terms, the clean membrane resistance ($R_\mathrm{m}$) and the filter cake resistance ($R_\mathrm{c}$):
+\begin{equation}
+ R_\mathrm{tot}= R_\mathrm{m} + R_\mathrm{c} \, ,
+ \label{RIS4}
+\end{equation}
+where $R_\mathrm{c}$ can be obtained from:
+\begin{equation}
+ R_\mathrm{c}= \gls{dl}\, \gls{Kc},
+\end{equation}
+and \gls{Kc} is obtained from:
+\begin{equation}
+ \gls{Kc}= \cfrac{\gls{K}\, 90}{\gls{dpHead}} \, \cfrac{(\gls{eps})^2}{(1-\gls{eps})^3} \, .
+\end{equation}
+where \gls{Kc} [\unit{\rpsquare\metre}] is the specific cake resistance, \gls{dl} [\unit{\metre}] the filter cake thickness, \gls{K} [\,-\,] the kozeny constant, \gls{dpHead} [\unit{\metre}] the mean particle diameter and \gls{eps} [\,-\,] the filter cake porosity. \par
+By plugging the total filtration resistance $R_\mathrm{tot}$ into Darcy's law, an expression is obtained to calculate the flux:
+\begin{equation}
+\gls{J} =  \cfrac{\gls{dp}}{R_\mathrm{tot}\, \gls{fluidKin}},
+ \label{darcy2}
+\end{equation}
+The flux decrease could be considered homogeneously over the entire membrane. However, the creation of a realistic filter cake architecture requires a spatially variable flux. So, a sectional approach similar to \cite{Li2006} should be used (Figure \ref{fig:sectional}). Hence, the membrane surface is subdivided in sections with a constant length ($\Delta x$). The flux through each section is calculated with Eqs.\ \eqref{RIS4}-\eqref{darcy2}. The newly calculated fluxes are subsequently employed as boundary conditions on the membrane face and a new flow profile has to be generated via \gls{CFD}. \par
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.6\columnwidth}
+    \input{figs/sectional.pdf_tex}
+    \caption{Schematic representation of a heterogeneously distruted flux along the membrane surface. \label{fig:sectional}}
+    \label{sectional}
+\end{figure}
+In order to account for the variable flux, a bidirectional coupling  has to be established between \gls{CFD} and the \gls{ABM}, which is, however, not straightforward because both model layers are implemented in different software platforms. Nonetheless, two approaches are identified to establish such a coupling. \par
+The first approach involves using a third program as a wrapper that distributes the flux data from MATLAB to OpenFOAM and the flow profile from OpenFOAM to MATLAB. This approach is the most straightforward and can be accomplished by means of shell scripting. The second approach involves setting up a MATLAB engine script in OpenFOAM that compiles MATLAB's m-code to C++. This approach is much more complex, but is computationally very efficient. \par
+%http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2012/JohannesPalm/projectPres.pdf
+%http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2012/JohannesPalm/Connecting_Matlab_with_OpenFOAM_JP_peered1.pdf
+In order to be able to account for the direct effects of the filter cake on the surrounding liquid, it is necessary to explicitly model the suspended particles and the interactions with the continuous phase. This can only be achieved with discrete element methods.
+
+% \todo[inline]{Misschien nog kort LIGGGHTS aanraden http://www.cfdem.com/liggghts-open-source-discrete-element-method-particle-simulation-code}
+
+% the presence of suspended solids in the fluid is not taken into account by the \gls{CFD}. When the concentration of suspended solids is sufficiently low, these effects can be neglected.However, in the filter cake particles are concentrated and the impact on the surrounding fluid is not negligible. \\ \\In order to This approach is a lot more complicated and computationally demanding as it requires the explicit modelling of sludge particles and interaction with the liquid phase. The \textbf{strategy} for including the \textit{direct} and \textit{indirect} effects of filter cake formation on the liquid flow are discussed below. \\ \\
+% As mentioned above, the \textit{indirect} effects of filter cake formation are governed by the flux decrease over time. To model this, a \gls{RIS} approach is applied with two resistance terms, the clean membrane resistance ($R_m$) and the filter cake resistance ($R_c$),
+% 
+% 
+% \begin{itemize}
+%  \item moeilijker
+%  \item wss sneller
+% \end{itemize}
+% A third possibility is translating the \gls{ABM} from matlab to C++ which is the programming language used by openFOAM
+% \begin{itemize}
+%  \item A lot of different solvers for differential equations
+%  \item is a lot of work and matlab is a higher level language so some functions might not be available in OpenFOAM?
+% \end{itemize}
+% 
+% %http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2012/JohannesPalm/projectPres.pdf
+% %http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2012/JohannesPalm/Connecting_Matlab_with_OpenFOAM_JP_peered1.pdf
+% The \textit{direct} effects: DEM uitleggen en LIGGGHTS voorstellen
+% 
+% \todo[inline]{misschien dit nog eens uitleggen}
+% \textbf{intro...} \par
+% \begin{itemize}
+%  \item establish the link to a third programm ing environment such as bash
+%  \item translate the code to c++ en implement abm in c++ 
+%  \item Compile the matlab code in openFOAM (zie bestandje)
+%  \item establish the link to a third programming environment such as bash
+%  \item but ideally, a discrete element package such as lightss should be used.
+% \end{itemize}
+% 
+% \begin{itemize}
+%  \item is the resolution of the CFD meshing small enough to capture the local changes in flux
+%  \item something interesting to keep in mind it the EPS are not modelled here but it might be sensible to also perform viscosity measurements of the continuous phase in order to increase the accuracy of the continuous model.
+% \end{itemize}
+
+\section{Sources of numerical instability}
+It is important to keep in mind that this spatio-temporal model basically consists of a system of \gls{PDE}s which are discretised and solved numerically. These methods can suffer from numerical instabilities and this is also the case for this model. As it seems important for future work, a brief overview is provided of the causes of numerical instability. \par
+The first source of instability is described in \cite{Ghijs2014} and concerns the Stokes drag force which introduces a maximum solver time step limited by the smallest particle diameter, i.e.\
+\begin{equation}
+ \Delta t \leq \cfrac{\rho_\mathrm{p}\, \gls{partDia}^2}{18 \, \gls{fluidKin}} \, .
+\end{equation}
+A second source of instability are the velocity fields from \gls{CFD}. The convergence criteria of the OpenFOAM solvers are set to $10^{-7}$ which means that openFOAM will stop iterating when the difference between the fields of the current and previous iteration is smaller than $10^{-7}$. This results in velocity fields where zeros are actually numbers between $10^{-8}$ and $-10^{-8}$. Although seemingly unimportant, this causes numerical instabilities due to the sensitivity of the force balance to the sign of the fluid velocity. This issue can be easily solved by employing a filter on the velocity values setting all values below the convergence criteria to zero. \par
+Lastly, an additional constraint on the solver time step was found, this time originating for large particles ($\gls{partDia} > \unit{100}{\micro\metre}$) in the system. Under high crossflow velocities and fluxes, the radial migration of particles is a lot more prominent and forms another source of numerical instability. Nevertheless, it is likely that for more extreme conditions this instability will also impact smaller particles and it should be further investigated.
+
+\section{Profilometry}
+In Chapter \ref{litRev}, an overview was given of the prominent profilometric techniques along with their lateral resolution and application restrictions. Based on this information, it is possible to make a selection of the profilometers that are most suitable for the characterisation of the filter cake surface. The filter cake should be characterised at micrometre scale, and techniques such as \gls{AFM}, \gls{SEM}, \gls{STM} are mostly used in the lower regions of the microscale and nanoscale. Although a high resolution does not impose a direct problem, this implies a low surface covering capacity and a high price tag, making these profilometers inappropriate for the task at hand. The contact-based modus operandi of stylus profilometry can disturb the surface of the soft filter cake and give rise to faulty measurements. %Hence, white light axial chromatism and interferometry seem to be the most suitable techniques for profiling filter cakes. 
+Furthermore, white light axial chromatism provides direct measurements of the distance, in contrast to the interferometry-based techniques where the distance is derived from other measured quantities. Hence, it seems that white light axial chromatism is the most suitable technique for profiling filter cake.
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}
+\chapter[Conclusion]%
+{Conclusion \label{ch:concl}}
+\hyphenation{si-mu-la-tion}
+Aiming at disclosing the mechanisms of filter cake formation, the model framework established by \cite{Ghijs2014} %to describe this process on a microscopic level 
+was succesfully extended. The representation of multidisperse feed flows was implemented, enabling a realistic simulation of \gls{MBR} feed flows characterised by a \gls{PSD}. Progression was made towards the formation of realistic filter cake structures by transitioning to a three-dimensional model. The implementation of a new filter cake attachment algorithm and new sampling procedures induced an enhanced accuracy and computational efficiency. Furthermore, the model implementation was parallelised, in order to speed-up the calculations and a post-processing tool was developed for a user-friendly analysis of the simulation results.
+The simulations of the extended model yielded interesting results and several conclusions can be formulated. \\ \\
+First of all, an experimental microfiltration unit for the calibration and validation of the model was designed by means of \gls{CFD}. The unit presented a perfect laminar flow regime without dead volumes or recirculation streams and enables a simplified representation of the filtration unit, lowering the computational demand of the model. The \gls{CFD} simulations indicated that in order to obtain such a flow regime, a gradual transition from the inlet to the membrane compartment is imperative. \par
+Next, a qualitative validation showed that the model was able to reproduce the radial migration of non-buoyant particles in a Poiseuille flow, governed by the Segr\'e-Silberberg effect. The theoretically and experimentally acknowlegded dependency of the radial migration magnitude on the Reynolds and particle Reynolds number was succesfully reproduced by the model. However, the occurence of an equilibrium position at approximately 60 \% of the distance from the center axis to the wall was not observed. This is most likely due to the absence of the wall-induced lift force in the force balance. Furthermore, the effect of the shear gradient-induced lift force should also be investigated in order to determine its relevance for filter cake formation. Through the Segr\'e-Silberberg effect, a spatial segregation of the suspended solids was demonstrated; bigger particles are more influenced by the inertial lift force and migrate faster towards the walls of the tube. \par
+ Lastly, a scenario analysis was performed and the results indicated a large effect of polydispersity on the fouling rate and filter cake porosity.  Multidisperse feed flows result in a faster filter cake build up and less porous filter cakes than monodisperse feed flows. The need to implement a particle rolling algorithm was concluded due to the formation of unrealistically narrow and high filter cake piles. Additionally, the adhesion equation should be calibrated or replaced with a force balance on the particles attached to filter cake/membrane and a bidirectional coupling between the two model layers should be implemented in order to simulate the increased filtration resistance due to membrane fouling, and predict a flux decline or \gls{TMP} increase for constant pressure or constant flux membrane filtration systems, respectively. \\ \\
+ To conclude, the spatio-temporal model was extended and a considerable progress was made towards realistic filter cake formation simulations. This research has yielded several new insights in the underlying mechanisms of membrane fouling and indicated the importance of the lift force induced migration of suspended solids in tubular membranes as well as the impact of polydispersity.
+%  \todo[inline]{Is het een probleem dat hier deze calibratie en validatie komt na de bespreking van de resultaten maar in het werkje dit eerst was, het leek me gewoon logisch zo.}
+%  \todo[inline]{Zijn er nog dingen die in de Appendix moeten?}
+
+ 
+%\todo{addition: new stability issues}
+
+% \large{Checkbox for finalisation}
+% 
+% \begin{itemize}
+%  \item Everything in glossaries?
+%  \item All equation refs to eqref
+%  \item introduction of units
+%  \item 
+% \end{itemize}
+% 
+% % Addition of:
+% \textbf{einde van dit stukje}
+% In \cite{Ghijs2014} the flow profile is generated only once at the beginning of the filter cake simulation. This profile is used throughout the entire simulation to describe the flow of the continuous phase. As mentioned above, this approach does not allow to capture the local effects of filter cake formation on the fluid velocity. Moreover, the filter cake formation will lead to locally decreased fluxes that will have also have an impact on the local fluid velocity. Now, the flux is assumed constant throughout the simulation which is not realistic assumption. \par
+% The impact of the changing flux on the flow profile in the system can be expected to be negligible due the small cake volume compared to the fluid volume in the system. However, the impact is substantial at the micro environment in close proximity of the filter cake surface. And it is here that the filter cake formation is most sensitive to variations in the flow profile. Consequently, it is necessary to elaborate a coupling between the two model layers. The flow profile will \textbf{ meermaals be aangepast gedurende de simulatie om zo the invloed van de lokale veranderingen te incorporeren.} This model extension is discussed in \textbf{sectie...}. 
+% \todo[inline]{op het einde zeggen dat oorspronkelijk het maar eenmaal berekend wordt} 
+% \todo[inline]{nog ergens beschrijven wat euler lagrange betekent: zie p 26 michael} 
+% \todo{addition: not only important to make sure there is rolling of the particles in the direction of gravity but also in the direction parallel to flow as it can be expected that particles should be able to go around already formed pieces of filter cake.}
+% 
+% \todo[inline]{Appendix A technische tekening van de MBR en een fotoke}
+
+%%%%%%%%%%%%%%%%%%possible extensions and questions for the defense %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%ù
+% 
+% \todo[inline]{\begin{itemize}
+%   the effects of EPS are not included  Ji et al.2008 Enhancement of filterability... toont het belang van van liquid phase in fouling \\
+%  no electrostatic forces are included which might have important consequences on filter cake formation (\textbf{ergens een bron vinden die dit staaft, ik denk dat broekmann of Yoon oof die forces consideren} zeker met het oog op vandermeeren \\)
+%  compression of the cake layer \\
+%  met een slice van de reactor te simuleren heb je geen behoud van massa want partikels kunnen via de Z-as verdwijnen maar niet bijkomen => \textbf{periodic boundary conditions nemen} \\
+% \end{itemize}
+
+
+% \todo[inline]{Vragen thesis: \\ What is LMH?}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%% Old TODOs and need checking if there is still time%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{itemize}
+% \item diffusion \cite{Yoon1999}
+% \item betere inertial lift force valid for laminar channel flows of any reynolds number \cite{Yoon1999}
+% \item still a lot of forces are not taken into account in our model
+% \item particle rolling after deposition \cite{Yoon1999}
+% \item Looking at the coordination number and packing factors \cite{Yoon1999}
+% \item \sout{In the advanced visualisation possible to click on initial particle and track it in time visualising all the forces this will lead to a better understanding of the mechanism of cake formation and why the velocity of the particle is higher then the fluid velocity}
+% \item fix long time bug
+% \item \sout{make ModelMainAnalysis write output in HDF5-format}
+% \item \sout{acceleration of particle in information box, GUI}
+% \item make a button, find diameters in the GUI
+% \item \sout{plot time in GUI}
+% \item find out why suddenly the forces change after settling
+% \item \sout{Check if GUI actually tracks the right particle}
+% \item Implement the advanced plotting into the GUI
+% \item Check why the sedimentation function fails
+% \item change all variable declarations to text not summation
+% \item Change all equations to a readable format (bigger)
+% \item Cao verder schrijven
+% \item Alle vette tekst herschrijven
+% \end{itemize}
+

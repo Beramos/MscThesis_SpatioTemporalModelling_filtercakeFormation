@@ -1,0 +1,192 @@
+\hyphenation{}
+\chapter[Appendix: Technical drawing microfilter]%
+{Technical drawing microfilter \label{ch:tech}}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=1\textwidth]{figs/techTekExpSetup.pdf}
+  \caption{Technical drawing of the microfiltration device}
+\end{figure}
+
+
+
+% 
+% \section{Sensitivity base class code \label{senscode}}
+% 
+% \begin{lstlisting}[frame=none,columns=fixed]
+% import os
+% import numpy as np
+% 
+% from parameter import *
+% import matplotlib.pyplot as plt
+% from matplotlib.ticker import FixedLocator, MaxNLocator
+% 
+% class SensitivityAnalysis(object):
+%     """
+%     Base class for the Sensitivity Analysis
+%        
+%     Parameters
+%     ----------
+%     ParsIn : list
+%         ModPar class instances in list or list of (min,max,'name')-tuples
+%     
+%     Attributes
+%     -----------
+%     ParsIn : list
+%         a list of (min,max,'name') values, 
+%         [(min,max,'name'),(min,max,'name'),...(min,max,'name')]
+%     parmap : dict
+%         tracks the sequence of the parameters 
+%     Pars : list of ModPar instances
+%         Used when working with the pyFUSE package
+%     ndim :  int
+%         number of uncertain input factors
+%     namelist : list
+%         list of the uncertain input factors used
+%     
+%     """
+%     
+%     def __init__(self,ParsIn):
+%         '''
+%         Check if all uniform distribution => TODO ! if all -> sobol sampling
+%         is possible, else, only uniform and normal distribution are supported
+%         for using the sobol sampling... Here is still work to do!!
+%         '''
+%         
+%         if  isinstance(ParsIn, dict): #bridge with pyFUSE!
+%             dictlist = []
+%             for key, value in ParsIn.iteritems():
+%                 dictlist.append(value)
+%             ParsIn = dictlist
+%             print ParsIn
+%        
+%         #control for other 
+%         self.ParsIn = ParsIn  
+%         self.parmap={} #dictionary linking ID and name, since dict instance has no intrinsic sequence
+%         for i in range(len(ParsIn)):
+%             if isinstance(ParsIn[i], ModPar): #or isinstance(ParsIn[i], pyFUSE.parameter.ModPar):
+%                 cname = ParsIn[i].name
+%                 self.Pars = ParsIn
+%                 self.ParsIn[i] = (ParsIn[i].min, ParsIn[i].max, cname)
+%                 self.parmap[i] = cname
+%                 
+%             elif isinstance(ParsIn[i],tuple):
+%                 if ParsIn[i][0] > ParsIn[i][1]:
+%                     raise Exception('Min value larger than max value')
+%                 if not isinstance(ParsIn[i][0],float) and isinstance(ParsIn[i][1],float):
+%                     raise Exception('Min and Max value need to be float')
+%                 if not isinstance(ParsIn[i][2],str):
+%                     raise Exception('Name of par needs to be string')                    
+%                 self.parmap[i] = ParsIn[i][2]
+%                 #create modpar instance of the tuple
+%                 self.Pars=[]
+%                 for par in ParsIn:
+%                     self.Pars.append(ModPar(par[2],par[0],par[1],(par[0]+par[1])/2.,'randomUniform'))
+%             else:
+%                 raise Exception('The input type for sampling not correct,\
+%                 choose ModPar instance or list of (min,max)-tuples')        
+%         
+%         self.ndim=len(ParsIn)
+% 
+%         self.namelist = [] 
+%         for i in range(self.ndim):
+%             self.namelist.append(self.parmap[i])        
+% 
+%     def WritePre(self,filename = 'inputparameterfile', *args, **kwargs):
+%         '''
+%         Parameterinputfile for external model, parameters in the columns files
+%         and every line the input parameters
+%         
+%         Parameters
+%         -----------
+%         filename : str
+%             name of the textfile to save
+%         *args, **kwargs : args
+%             arguments passed to the numpy savetext-function
+%         '''
+%         
+%         np.savetxt(filename,self.parset2run,*args,**kwargs)
+%         print 'file saved in directory %s'%os.getcwd()
+%           
+%     def ReadRuns(self,filename, *args, **kwargs): 
+%         '''
+%         Read model outputs (TODO: do sobol for multiple outputs, iterating the
+%         post)
+%         Format is: every output of the ithe MC on ith line
+%         
+%         output2evaluate can also be made on a other way
+% 
+%         Parameters
+%         -----------
+%         filename : str
+%             name of the textfile to load    
+%         *args, **kwargs : args
+%             arguments passed to the numpy loadtext-function
+%             
+%         '''
+%         self.output2evaluate = np.loadtxt(filename, *args, **kwargs)
+% \end{lstlisting}
+% 
+% 
+% 
+% 
+% \section{Model input file for PyFUSE model \label{inpufile}}
+% 
+% \begin{lstlisting}[frame=single,columns=fixed]
+% ######################################################
+% ##    Model Parameter input file
+% ##    The parameter is defined by his distribution,
+% ##    boundaries and extra info needed by distribution 
+% ##    provide on each line one parameter with 
+% ##    following information:
+% ##    name : string
+% ##        Name of the parameter
+% ##    minval : float
+% ##        Minimum value of the parameter distribution
+% ##    maxval :  float
+% ##        Maximum value of the parameter distribution
+% ##    optguess : float
+% ##        Optimal guess of the parameter, must be 
+% ##        between min and max value
+% ##    pardistribution : string
+% ##        choose a distributionfrom: randomUniform,
+% ##        randomTriangular, randomTrapezoidal, 
+% ##        randomNormal, randomLogNormal
+% ##    *kargs  :
+% ##        Extra arguments necessary for the 
+% ##        chosen distribution
+% ##	Lines with ## marks are neglected
+% ######################################################
+% ## NAME	MIN MAX OPTGUESS DISTRIBUTION ARGS*
+% S1max	50. 5000.000 400. randomTriangular 1000.
+% S2max	100. 10000.000 1000. randomNormal 500. 25. 
+% fitens 0.01 1.0 0.99 randomLogNormal	0.5 0.2
+% firchr 0.050 0.950 0.5 randomTrapezoidal 0.4 0.6
+% fibase 0.050 0.950 0.5 randomUniform
+% r1 0.050 0.950 0.5 randomUniform
+% ku 0.01 1000. 0.044 randomUniform
+% c 0.99 20.0 1. randomUniform
+% alfa 1.000 250. 150. randomUniform
+% psi 1.000 5.0 2.5 randomUniform
+% kappa 0.050 0.950 0.5 randomUniform
+% ki 0.001 1000. 0.00833 randomUniform
+% ks 0.001 10000. 0.5 randomUniform
+% n 1.000 10. 3. randomUniform
+% v 0.00001 0.250 0.004	randomUniform
+% vA 0.001 0.250	0.0015 randomUniform
+% vB 0.001 0.250 0.0015 randomUniform
+% Acmax 0.050 0.950 0.5 randomUniform
+% b 0.001 3.0 0.2 randomUniform
+% loglambda	5.000 10.0 7.5 randomUniform
+% chi 2.000 5.0 3.5 randomUniform
+% mut 0.010 5.0 0.6 randomUniform
+% be 0.99 4. 3.1 randomUniform
+% alfah	0.01 0.99 0.5 randomUniform
+% tg 0.0 0.7 0.3 randomUniform
+% tif 0.0 0.7 0.26 randomUniform
+% tof 0.0 0.7 0.12 randomUniform
+% ko 0.01 0.99 0.15 randomUniform
+% timeo 2. 48 24 randomUniform
+% timei 2. 250. 20 randomUniform
+% timeb 200. 10000. 2100. randomUniform
+% \end{lstlisting}

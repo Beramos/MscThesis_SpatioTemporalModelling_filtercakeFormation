@@ -1,0 +1,243 @@
+\hyphenation{}
+\chapter[Model development]%
+{Model development \label{ModelDev}}
+The profound study of other membrane fouling modelling approaches described in literature (Chapter \ref{litRev}) and the critical analyses of the assumptions and model framework proposed by \cite{Ghijs2014} (Chapter \ref{spatModel}) identified the processes that require further development and those that are not yet incorporated. The proposed model extensions include changes in the model framework, sensu strictu, and the development of accessory tools such as a \gls{GUI} for the analysis of the simulation results and post-processing. This chapter discusses the implemented model extensions and tools in-depth and is concluded by an overview of the model's architecture.
+
+\section{Polydispersity}
+% \gls{MBR} sludge is a complex mixture of suspended solids, \gls{EPS}, water and solutes. The suspended solids are mostly made out of the heterogeneous microbial community in the \gls{MBR} which consists of microorganisms in all sizes and shapes T\citep{Juretschko2002}. %Bigger aggregates can be formed due to the bioflocculation of these organisms and breakage can be induced by the shear regime in the \gls{MBR} \citep{Li2007}. %\todo{The EPS-matrix which consis(EPS matrix is very heterogeneous, in which a variety of polymeric materials have been found: carbohydrates, proteins, lipids and nucleic acids. In this work,) \textbf{bron}}
+\cite{Broeckmann2006} demonstrate the influence of particle and membrane pore size distributions on cake layer formation and pore blocking. \cite{Meng2006} also identify the \gls{PSD} as an important factor that affects membrane fouling. Moreover, it is generally known that %the \gls{PSD} has an important impact on the filter cake structure, leading to changes in cake porosity. 
+a heterogeneous mixture of particle sizes gives rise to a closer packing of particles in the filter cake, %and consequently a denser filter cake, 
+which has an important impact on the filtration resistance. It is expected that a dense filter cake is more resilient towards liquid shear stresses and thus less prone to detachment. \par
+It is clear that characterising the feed flow of filtration processes as a homogeneous and monodisperse suspension of perfect spheres is not realistic. The strong depency of the filter cake architecture and characteristics on the particles size demonstrates the importance of a more accurate representation of the dispersed phase. Extending the model towards polydispersity of the bulk phase is therefore a crucial step in establishing a realistic membrane fouling model. 
+The extension of the model towards polydispersity is somewhat complicated as many processes described by the model, e.g.\ the attachment of particles, are dependent on the particle diameter and the model implementation often relies on the assumption of monodispersity. Hence, this modification required the revision and adaptation of some process implementations. \\ \\
+The flocculation of free moving particles in the bulk phase is not considered by this model. Although, the inclusion of polydispersity makes it possible to account for particle aggregates by representing sludge flocs as one particle with a bigger diameter. It is also possible to model non-spherical particles as a multidisperse aggregate of spheres \citep{Hubbard1996}.
+%The \gls{PSD} has been determined for \gls{MBR} sludge in \cite{Lee2003,Meng2006} and \cite{Wisniewski1998}.
+
+\subsection{Particle sampling \label{sec:ParSamp}}
+For a monodisperse stream of particles entering the membrane filter, the number of particles entering each time step $N$ [\,-\,] is given by,
+\begin{equation}
+ N=6\, \cfrac{\gls{Ucf}\, \gls{cb}\, A}{\gls{rhoS}\, \pi\, \gls{partDia}^3 }\, \Delta t \, ,
+\label{eq:NumPartPerStep}
+ \end{equation}
+with $\gls{Ucf}$ [\unit{\metre\,\reciprocal\second}] the crossflow velocity at the inlet, \gls{A} [\unit{\metre\squared}] the inlet surface area and $\Delta t$ [\unit{\second}] the elapsed time per time step. \par
+When modelling a multidisperse bulk phase, Eq.\ \eqref{eq:NumPartPerStep} does not hold as \gls{partDia} is not constant. In order to have a quantitative measure of incoming particles, this flow is expressed as a mass flow rate, %Indirectly, the quantity of entering particles can be expressed as the mass flow rate of particles,   
+\begin{equation}
+ \cfrac{dm}{dt} = \gls{Ucf}\, \gls{cb}\, A\, ,
+\label{eq:incomMass} 
+\end{equation}
+
+with \gls{m} [\unit{\kilogram}] the mass of incoming particles. Multiplying Eq.\ \eqref{eq:incomMass} with the total simulation time $t_\mathrm{tot}$ [\unit{\second}] results in an estimated value of the total mass inflow during the entire simulation,
+\begin{equation}
+ m_\mathrm{tot} = \gls{Ucf}\, \gls{cb}\, A\,  t_\mathrm{tot} .
+\label{eq:incomMass2} 
+\end{equation}
+The next step is the development of a sampling procedure to represent the multidisperse feed flow, characterised by a \gls{PSD}. Particles are sampled from this \gls{PSD} until the total mass, as determined by Eq.\ \eqref{eq:incomMass2}, is attained. \par
+A \gls{PSD} depicts the relative amount of particles present in the bulk phase as a function of the particle size, based on volume or number. Experimentally determined \gls{PSD}s are based on a finite number of measurements, making \gls{partDia} a discrete variable for which the inverse \gls{CDF} sampling algorithm is the most efficient pseudo-random number generator, given a cumulative \gls{PSD}. %(Algorithm \ref{alg:Sampling}). 
+This sampling procedure randomly generates a number in the interval [0,1] and searches in the given \gls{PSD} for the diameter value that corresponds to the probability value that is the closest to the generated number. It can be proven that for a large number of samples, this procedure results in the original \gls{PSD}.\\ \\
+% \todo[inline]{Move x up a bin to the... and move x down a bin...: JB niet duidelijk wat dit juist doet BDJ: ik zou echt niet weten hoe ik dat anders moet schrijven}
+% \todo[inline]{Bron voor algoritme neerschrijven? (wiskunde 4)}
+% \todo[inline]{misschien algorithm 1 eruit en in woorden schrijven}
+% \begin{algorithm}[H]
+%  \SetAlgoLined
+%  \KwData{Cumulative particle-size distribution $F(\gls{partDia})$}
+%  \While{sampled mass\, \textless\, required mass}{
+%   \vspace{0.1cm}
+%   Simulate observation $y$ of $Y$ from the uniform distribution [0,1]; \\
+%   Choose an initial value for $\gls{partDia}$, $x$;  \\ 
+%   \eIf{$F(x) \leq y $}{
+%    \While{$F(x) < y$}{ \vspace{0.1cm} Move $x$ up a bin to the next value of $x$; \\
+%    Evaluate $F(x)$;
+%    }}{\While{$F(x) > y$}{ \vspace{0.1cm} Move $x$ down a bin to the previous value of $x$; \\
+%    Evaluate $F(x)$;}}
+%   Use $x$ as the simulated observation of \gls{partDia};\\ 
+%   Add $x$ to the previously sampled observations;\\
+%   Calculate the sampled mass;\\
+%  }
+%  \caption{The inverse CDF sampling algorithm for sampling particles from a \gls{PSD}.\label{alg:Sampling}}
+% \end{algorithm} \vspace{0.75cm}
+Lastly, the number of particles that enters each time step is simulated stochastically. For a sufficiently small time step $\Delta t$, the average number of particles entering each step (Eq.\ \eqref{eq:NumPartPerStep}) is smaller than one. As it is not possible to introduce a non-integer number of particles, the latter represents the probability of a particle entering on a certain time step, this procedure is depicted in Algorithm \ref{alg:stoch}. \par
+%For typical operational values of $\gls{Ucf}$ (\unit{1}{\metre\,\reciprocal\second}) and $C$ (\unit{10}{\kilogram\,\rpcubic\metre}), the number of particles entering is typically in the order of $10^{-1}$. More extreme operational conditions might give rise to numbers higher than one and this approach should be revised, but this is straightforward. \par
+
+\begin{algorithm}[]
+ \SetAlgoLined
+ Calculate average number of incoming particles per time step; \\
+ \For{$i=1$ \KwTo number of time steps}{
+ \eIf{random number [0,1] $<$ number of particles per time step }{1 particle enters system;}{No particles enter system;}
+ }
+  \caption{Stochastic implementation of the number of particles entering the system.\label{alg:stoch}}
+\end{algorithm}
+% \vspace{0.5cm}
+%\par In practice, the \gls{PSD} are provided in a text file which is loaded into matlab and transformed to a CSD PSD => CFD naar N samples
+When considering the introduction of a dispersion into a tubular system with a fully developed parabolic flow, the particles should not be equally distributed across the inlet, since they would then accumulate in the regions with low velocities close to the boundaries and diminish in the middle regions with high velocities, creating a parabolic concentration profile. This phenomenon is shown in Figure \ref{fig:parSampComp} (b). In order to prevent such an unrealistic behavior, the inlet positions of the particles are determined by a sampling procedure so that the introduction of particles at a certain position is corrected for the local variation in the fluid velocity. This is accomplished by first normalising the parabolic velocity profile at the inlet so that it sums up to one, yielding a proper \gls{PMF}. The \gls{PMF} is integrated and the resulting \gls{CDF} can be used in the above-mentioned inverse CDF sampling procedure. However, this inverse CDF sampling procedure can be computationally demanding for discrete distributions with a lot of bins. The latter is relatively low for the PSD but for the velocity profile this number is too high, resulting in an inefficient sampling procedure which slows down the model considerably. Hence, a power law ($f(x)= a\, x^{b}$) is fitted to the \gls{CDF} and the inverse CDF is determined analytically (Figure \ref{fig:veloFit}).
+This approach gives rise to a faster sampling procedure than its discrete counterpart. Figure \ref{fig:parSampComp} shows the simulation of particles entering a fully developed parabolic flow with and without the parabolic sampling procedure. 
+ 
+ \begin{figure}[H]
+\centering
+%\raisebox{0.5cm}{
+\centerline{
+\subfigure[]{\includegraphics[height=0.32\textwidth]{figs/ParSamp.png}}
+\subfigure[]{\includegraphics[height=0.32\textwidth]{figs/nonParSamp.png}}
+}
+\caption{Simulated flow of particles close to the wall of a tube with a diameter of  \unit{8}{\milli\metre}. The incoming particles are sampled with (a) and without the velocity correction (b). \label{fig:parSampComp}}
+\end{figure}
+
+\begin{figure}[H]
+ \begin{center}
+   \includegraphics[width=0.65\textwidth]{figs/fitPara2.png}
+ \caption{Comparison of the fitted power law ($f(x)= a\, x^{b}$) and the discrete CDF. \label{fig:veloFit}}
+ \end{center}
+ \end{figure}
+%  \todo[inline]{nog een goodness of fit grootheid misschien gewoon in de legende}
+\subsection{Filter cake formation \label{sec:FCForm}}
+Another consequence of a variable particle diameter is the necessity to modify the collision detection algorithm, registering collisions of particles with the membrane or the filter cake. In \cite{Ghijs2014}, the filter cake is implemented in a discrete manner such that the filter cake thickness is tracked at a predefined longitudinal resolution. However, as the filter cake is built up out of spherical particles, the surface is highly irregular and curvy. In order to accurately represent this surface in a discrete way, the discretisation step should be at least one order of magnitude lower than the smallest particle diameter. Hence, storing filter cake thicknesses explicitely is only computationally efficient when considering a thick cake layer. Furthermore, for the evaluation of certain filter cake characteristics such as porosity, segregation and the \gls{PSD}, it is better to store the position and the diameter of the filter cake particles, instead of the thickness. The filter cake formation algorithm was thus completely revised to step away from this explicit and discrete representation. This required the development of a collision detection algorithm to detect collisions between spheres instead of collisions between spheres and a surface; this procedure is denoted below.\\ \\
+Tracking all collisions within the system is computationally demanding and would be responsable for a large part of the computing time. In order to keep the simulation time reasonable, it is important to implement this procedure as efficiently as possible. First, a boundary layer $b$, whose thickness is the sum of the maximal filter cake thickness $\Delta l_\mathrm{max}$ and maximal particle diameter $d_\mathrm{p,max}$, is considered (Figure \ref{coldet}). Only particles within this boundary layer are close enough to the filter cake and are checked for collision. Next, the deposition trajectory $\vecb{V}$ is constructed between the particle's old and new position along with two other parallel vectors ($\vecb{c}_\mathrm{1}$ and $\vecb{c}_\mathrm{2}$), defining the search range for collision. These vectors represent the position of the biggest particles ($\gls{partDia}=d_\mathrm{p,max}$) that are just able to touch the depositing particle along its trajectory towards the membrane. Consequently, all particles centered outside this band are not able to collide with the depositing particle and are not considered. Finally, collision is detected by evaluating Eq.\ \eqref{euclid} for a predetermined number of points along the deposition trajectory $\vecb{V}$.  %Attached particles with the maximum diameter, centered on $\vecb{c}_\mathrm{1}$ and $\vecb{c}_\mathrm{2}$
+\begin{equation}
+ \sqrt{(x_\mathrm{1}-x_\mathrm{2})^2 + (y_\mathrm{1}-y_\mathrm{2})^2} \leq (d_\mathrm{1}/2+d_\mathrm{2}/2), 
+ \label{euclid}
+\end{equation}
+with $x_\mathrm{1}$, $x_\mathrm{2}$ and $y_\mathrm{1}$, $y_\mathrm{2}$ respectively the coordinates of the downward moving particle and the particle in the filter cake and $d_\mathrm{1}$, $d_\mathrm{2}$ the diameter of these particles. If Eq.\ \eqref{euclid} is valid for a node in the collision trajectory, a collision occurs and the particle will attach to the filter cake at that position, if the stochastic adhesion criterion Eq.\ \eqref{eq:stickychance} is fulfilled. \par %This procedure is illustrated in Figure \ref{coldet}. \par
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.7\columnwidth}
+    \input{figs/collisionDetPlainComplex.pdf_tex}
+    \caption{Schematic representation of the collision detection algorithm. The white particles are outside the collision boundaries and are not evaluated for collision.}
+    \label{coldet}
+\end{figure}
+To summarise, the new collision detection algorithm is more accurate due to the continuous and implicit representation of the filter cake and its performance is improved by constraining the detection of collisions to a boundary layer and limiting the search for possible collisions in a narrow zone spanning the collision search band. 
+
+%\todo[inline]{addition: equations for the collision detection boundaries}
+
+\section{Extension to a three-dimensional model \label{sec:3D}}
+The model extension from two dimensions to three dimensions is a logical step towards a realistic filter cake representation. Yet it %the addition of a dimension
+leads to a considerable increase in the number of modelled particles and one may wonder whether the added value of  process knowledge %of the obtained process knowledge 
+%to question if the benefit of additional process knowledge gained by this transition %towards a three-dimensional model 
+outweighs the extra computational burden. There are, however, two key reasons to chose for a three-dimensional model. \par
+In \cite{Ghijs2014}, the simulations suffered from an unrealistic ``piling'' of particles in the filter cake. %as the particles mostly settle on the first piece of filter cake they encounter. 
+Even with the possibility of an elastic collision, it was observed that most particles are caught by previously formed filter cake patches. Due to the lack of a third dimension, a piece of filter cake will catch all incoming particles and keep growing as there is no mechanism that counteracts this. %For lower values of $k$ this process will be a lot slower, but the end result will the same %as is demonstrated in 
+It is hypothesised that by extending the model to three dimensions, a single piece of filter cake will have less impact on the further development of the fouling. Nonetheless, the increased dimensionality will most likely not entirely solve this issue; to do so, the model should be extended with a rolling algorithm. Such an algorithm is described in \cite{Smets} and simulates the three-dimensional rolling of spheres. To include this in the model, a transition to three dimensions is imperative. \\ \\
+As can be expected, the flow of particles in a three-dimensional flow field is similar to that in a two-dimensional flow field. Still, it is necessary to modify some of the implemented processes. First, the force balance  (Eq.\ \eqref{maxeyRiley}) is extended with a third direction ($z$). The resulting force in this direction is not influenced by $\vecb{F}_\mathrm{g}$ and $\vecb{F}_\mathrm{arch}$ and can be written in terms of $\vecb{F}_\mathrm{p}$, $\vecb{F}_\mathrm{drag}$, $\vecb{F}_\mathrm{am}$, $\vecb{F}_\mathrm{hist}$ and $\vecb{F}_\mathrm{lift}$. \par
+Secondly, the lift force in the $x$- and $y$-direction has to be extended with an additional gradient in the $z$-direction. In two dimensions, the inertial lift force has one component in both the $x$-direction and $y$-direction \citep{saffman1965}:
+\begin{equation}
+ \displaystyle \vecb{F}_\mathrm{lift,x} = - 1.615\, \rho_f\, d_p^2\, {U}_{r,x}\, \sqrt{\mu_f \left| \cfrac{d U_{r,x}}{dy} \right|} \, \mathrm{sign}\left(\cfrac{d U_{r,x}}{dy}  \right)\, , 
+\label{eq:lift}
+ \end{equation}
+\begin{equation}
+ \displaystyle \vecb{F}_\mathrm{lift,y} = - 1.615\, \rho_f\, d_p^2\, {U}_{r,y}\, \sqrt{\mu_f \left| \cfrac{d U_{r,y}}{dx} \right|} \, \mathrm{sign}\left(\cfrac{d U_{r,y}}{dx}  \right)\, ,
+\label{eq:lift2}
+ \end{equation}
+with $U_{r,x}$ and $U_{r,y}$ the relative particle velocity in the $x$- and $y$-direction respectively . \par
+In three dimensions, Eqs.\ \eqref{eq:lift} and \eqref{eq:lift2}
+ %Eq.\ \eqref{eq:lift} shows that the direction of the lift force is perpendicular to the considered gradient and it is clear that these equations 
+ need to be extended with a gradient in the $z$-direction.  %Therefore, these equations do not suffice for a three-dimensional systems as 
+ The $x$-component of the lift force, for example, should now be written as:
+\begin{equation}
+\begin{split}
+ \displaystyle \vecb{F}_\mathrm{lift,x} = - 1.615\, \rho_f\, d_p^2\, {U}_{r,x}\, \left[ \sqrt{\mu_f \left| \cfrac{d U_{r,x}}{dy} \right|} \, \mathrm{sign}\left(\cfrac{d U_{r,x}}{dy}  \right) \right.\\ 
+ \left. + \sqrt{\mu_f \left| \cfrac{d U_{r,x}}{dz} \right|} \, \mathrm{sign}\left(\cfrac{d U_{r,x}}{dz}  \right) \right].
+\end{split}
+\label{eq:lift3D}
+\end{equation}
+With the correct force balance established, the model is now capable of describing the particle's motion in a three-dimensional flow field. \\ \\%The generation of this profile in three-dimensions proves to be even simpler than in two dimensions as this is where openFOAM is made for}. 
+%As discussed in section \ref{sec:calVal} the entire \gls{MBR} is modelled in \gls{CFD}. However, for the agent-based modelling of the particles it is computationally impossible to consider the entire reactor. Hence, a small part of the \gls{CFD} simulation is extracted and used in the agent-based model (Figure \ref{}).   
+%but the area of interest for the agent-based model is close to the membrane and most of the 
+The adaptation of the filter cake formation process for three dimensions is straightforward. More precisely, the collision trajectory vector is described in three dimensions and the collision search boundaries are now represented by a cylinder. In spite of these changes, the main working principle remains the same.
+% \begin{figure}[H]
+%  \centering
+% % \includegraphics{}
+%  \caption{temp}
+%  \label{}
+% \end{figure}
+\section{Parallelisation \label{sec:Parallel}}
+As mentioned in Section \ref{sec:3D}, the extension to three dimensions comes at a higher computational expense. For a \unit{10}{\kilogram\,\rpcubic\metre} dispersion of \unit{50}{\micro\metre} particles ($\rho_\mathrm{p}$  = \unit{1000}{\kilogram\,\rpcubic\metre}) flowing in a two-dimensional tube (\unit{10}{\centi\metre} $\times$ \unit{10}{\milli\metre}), approximately $8 \times 10^{8}$ particles have to be processed each second of simulated time, excluding the particles in the filter cake. When considering a box with the same dimensions and a width of \unit{5}{\milli\metre}, this number increases to $8 \times 10^{10}$, which indicates the difficulty of maintaining a reasonable \gls{SCR}. For one processor, the \gls{SCR} is in the order of  $1 \times 10^{-4}$. The implementation of the filter cake formation, sampling procedures and force balance are already very efficient, leaving little room for optimisation. Hence, the best solution is to parallelise the implementation to enable simultaneous computation on multiple processors (cores). This is done by assigning every processor a part of the spatial domain, so that it performs the calculations for the particles present in that part. Every predefined number of time steps, information is exchanged between the cores and the particles that moved to a neighbouring part of the spatial domain are reallocated to the appropriate cores. In this way, a good \gls{SCR} ($\sim 1 \times 10^{-3}$) is obtained without the need of convoluted code optimisation.   %e.g. the inclusion of new particles in the filter 
+%A subdivision in time is not possible due to the time dependency of the particle's position 
+
+\section{Model architecture}
+%Due to the implementation of a handfull of extensions and related adaptations of the model, its architecture has deviated from the original proposed by \cite{Ghijs2014}. 
+The overall model architecture is depicted in Figure \ref{fig:ModelStruct}.
+\begin{figure}[]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \input{figs/ModelStructureBendArrow.pdf_tex}
+    \caption{Overview of the model architecture. The \gls{MBR} geometry, \gls{PSD} and the general simulation parameters are the inputs of the model. The output of the model is the filter cake structure, represented by the ($x$, $y$, $z$)-coordinates and diameter of the particles in the cake. }
+    \label{fig:ModelStruct}
+\end{figure}
+The model takes three inputs, the first being the \gls{MBR} geometry. This geometry is defined in a Python script and converted to a suitable mesh by SALOME's Python interpreter. Then, this mesh is exported to OpenFOAM and the solution for the pressure and velocity fields are obtained using the simpleFOAM solver. These fields are subsequently imported to MATLAB. %by the \textit{``readFoamFiles''}-function.
+The second input is the \gls{PSD} of the particle diameters in the feed flow. During the initialisation, the total mass of particles that will flow through the system during the simulation is estimated and sampled as discussed in Section \ref{sec:ParSamp}. The last input is a list of general simulation parameters, such as the concentration of particles \gls{cb}, the stickiness parameter $k$, the time window considered by the history force, etc. Based on these values, %information of the simulation parameters and the \gls{PSD} 
+it is first checked if the calculation of the Stokes drag force is stable \citep{Ghijs2014}. If so, the main loop is entered. If not, an appropriate time step is suggested that leads to stable simulations.\par
+In the main loop, the computational domain is partitioned and assigned to a number of processors (Section \ref{sec:Parallel}). Each processor caries out a calculation loop to simulate the dispersed phase. Each time step, new particles are added to the system, the new positions of all particles are determined and the filter cake formation is simulated. After a fixed number of time steps, the information of the processors is collected and the domain is repartitioned. This procedure is repeated until the predefined simulation time is reached. %The main loop is repeated until the final simulation time is met.
+
+\section{Software}
+\subsection{MATLAB}
+MATLAB (v2015a, MathWorks), an abbreviation for matrix laboratory, is a high level matrix-based scripting language licensed by MathWorks. This commercial software package has an extensive library of readily available functions, mostly for engineering and scientific applications \citep{MathWorks2016}. MATLAB plays a central role in this master thesis, it is the backbone of the model linking all the different processes, software and files and acts as a basis for the \gls{GUI}.  %gathers the information from OpenFOAM and performs the calculation of the \gls{ABM} and 
+
+\subsection{Python}
+Python (v2.7.3, Python Software Foundation) is an open source, high-level programming language that is more general-purpose than MATLAB. Python is licensed by the Python Software Foundation and comes with a vast number of modules, both from the standard library and community-contributed libraries, making it widely applicable \citep{Foundation2016}. For this master thesis, Python is mainly used as scripting language for the automated generation of meshes through SALOME's Python interpreter.
+
+\subsection{SALOME \label{sec:SALOME}}
+SALOME (v7.6.0, OPEN CASCADE) is an open source software for the pre- and post-processing of numerical simulations. It is used as a pre-processor for the generation of the geometry and mesh before using \gls{CFD}. SALOME provides an \gls{API} for Python that enables scripting of the geometry and mesh, providing a generic workflow for the creation of variable geometries and meshes. SALOME is licensed by OPEN CASCADE \citep{Cascade2016}.
+
+\subsection{OpenFOAM \label{sec:OpenFOAM}}
+OpenFOAM (v2.2.2, OpenFOAM foundation) (Open Source Field Operation and Manipulation) is an open source software package that provides a vast number of solvers and utilities for the calculation of continuum mechanics \citep{OpenFOAM-Foundation2016}. OpenFOAM is written in C++ and has no \gls{GUI}, all manipulations are done by changing files and running applications from the command line. Two solvers are used for this master thesis, the simpleFOAM solver is a steady-state solver for turbulent and laminar flow and the pimpleFOAM solver is a large time-step transient solver for turbulent flow.
+%\todo[inline]{addition: paraview}
+% hier kan er nog altijd wet uitgewijd worden over de BC enz. zoals bij Michael
+\section{Post-processing user interface}
+This advanced mechanistic membrane fouling model aims at identifying the key mechanisms of membrane fouling in filtration processes. In addition to the accurate modelling of membrane fouling, it is important that the simulation results are analysed critically. Therefore, a \gls{GUI} was developed as post-processing tool that enables, amongst other things, a detailed visualisation of the filter cake and force balance (Figure \ref{fig:GUI}). The prominent utilities of this \gls{GUI} are elaborated below. \par
+By clicking the \textit{``Play''} button [1] the in silico filtration experiment is displayed in real-time speed. 
+With the \textit{``Track''} button [2], one can track individual particles throughout the simulation, while useful information about the particle's velocity, acceleration, size, etc.\ is displayed at [2a]. While tracking a particle, the force balance for the two main directions ($x$,$y$) is shown in two top right plots [2b]. This information is very useful for determining the main driving forces of filter cake formation under various operational conditions. The button \textit{``Detail''} [3] visualises the filter cake at a user-defined position in the form of a two-dimensional projection. The user is able to ``scroll'' through the filter cake along the length of the membrane for a visual inspection. A three-dimensional visualisation of the filter cake can be requested by clicking \textit{``3D''} [4]. 
+\textit{Diameter coloring} [5] assigns a different color to each particle size which can be convenient for the visualisation of certain phenomena, such as particle size segregation in the cake layer due to preferential sedimentation (Section \ref{sec:QualVal}). The \gls{PSD}s of the feed flow, filter cake, dispersed phase and the entire system (control) can be visualised by checking of \textit{``PSD''} [6]. 
+Finally, by clicking
+\textit{``Save''} [7] all the information of the detailed filter cake is stored in a MATLAB workspace variable for further manipulation outside the \gls{GUI}.
+
+\begin{sidewaysfigure}
+    \centering
+    \def\svgwidth{\columnwidth}
+    \input{figs/GUI.pdf_tex}
+    \caption{Graphical user interface for post-processing. Note that the bottom right plot of the filter cake is a two-dimensional projection, there is no overlap of particles.}
+    \label{fig:GUI}
+\end{sidewaysfigure}
+
+%  \begin{figure}[H]
+%     \centering
+%     \begin{subfigure}[]{}
+%         \centering
+%         \todo[inline]{enkel hier en op de laatste de schaal toevoegen, hier ook inlet aanduiden}
+%         \includegraphics[width=0.95\textwidth]{CFDCylboxCyl.png}
+%     \end{subfigure}\\ 
+%     \begin{subfigure}[]{}
+%         \centering
+%         \todo[inline]{deze moet ingezoomd worden}
+%         \includegraphics[width=0.85\textwidth]{shortCFD.png}
+%     \end{subfigure} \\
+%     \begin{subfigure}[]{}
+%         \centering
+%         \includegraphics[width=0.85\textwidth]{wedgeSmall.png}
+%     \end{subfigure} \\
+%         \label{fig:CFDMBR}
+% \end{figure}
+%     
+% \begin{figure}[H]   
+%     \begin{subfigure}[]{}
+%         \centering
+% %         \includegraphics[width=0.85\textwidth]{wedge2InletBot.png}
+% \todo[inline]{(d) moet nog weg deze is precies dezelfde als hierboven en zou het laatste schuine design moeten zijn met perfecte stroming}
+%     \end{subfigure}    
+%     \begin{subfigure}[]{}
+%         \centering
+%         \includegraphics[width=0.85\textwidth]{FinalCFD.png}
+%         \todo[inline]{fliplr, de inlet zit hier rechts}
+%         \label{fig:finalCFD}
+%     \end{subfigure}
+%     \caption{bla}
+% \end{figure}
+%misschien die coloring gebruiken: http://www.paraview.org/Wiki/images/8/89/Beginning_filters_7.png
+
+%\textbf{boekMS p22-25 zal handig zijn hier}
+
+%\textbf{boekMS p22-25 zal handig zijn hier}
+
+
+
+
+%----------------------------------------------------------------------------------------------------------
+\clearpage
+\clearpage{\pagestyle{empty}\cleardoublepage}

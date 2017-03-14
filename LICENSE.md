@@ -13,5 +13,5 @@ Ghent, June 3, 2016
 
 The promoters,                                      The tutor,              The author,
 
-Prof. dr. ir. Ingmar Nopens, dr. ir. Jan Baetens    ir. Wouter Naessens     ir. Bram De Jaegher
+Prof. dr. ir. Ingmar Nopens, dr. ir. Jan Baetens,    ir. Wouter Naessens,     ir. Bram De Jaegher
 
